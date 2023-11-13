@@ -3,9 +3,14 @@ const blogpostController = require("../controllers/blogpostController");
 
 const router = express.Router();
 
-router.param("id", blogpostController.checkID);
-
-router.route("/").get(blogpostController.getAllBlogposts);
-router.route("/:id").get(blogpostController.getBlogpost);
+router
+  .route("/")
+  .get(blogpostController.getAllBlogposts)
+  .post(blogpostController.createBlogpost);
+router
+  .route("/:id")
+  .get(blogpostController.getBlogpost)
+  .patch(blogpostController.updateBlogpost)
+  .delete(blogpostController.deleteBlogpost);
 
 module.exports = router;
