@@ -1,4 +1,5 @@
 const Blogpost = require("../models/blogpostModel");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.createBlogpost = async (req, res) => {
   try {
@@ -20,32 +21,12 @@ exports.createBlogpost = async (req, res) => {
 
 exports.getAllBlogposts = async (req, res) => {
   try {
-    const queryObj = { ...req.query };
-    const excludedFields = ["page", "sort", "limit", "fields"];
-    excludedFields.forEach((el) => delete queryObj[el]);
-
-    if (queryObj.createdAt) {
-      const timingKeys = Object.keys(queryObj.createdAt);
-      timingKeys.forEach((key) => {
-        queryObj.createdAt[key] = new Date(`${queryObj.createdAt[key]}`);
-      });
-    }
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(
-      /\b(gte|gt|lte|lt|regex)\b/g,
-      (match) => `$${match}`,
-    );
-
-    let query = Blogpost.find(JSON.parse(queryStr));
-
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort("-createdAt");
-    }
-
-    const blogposts = await query;
+    const features = new APIFeatures(Blogpost.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const blogposts = await features.query;
 
     res.status(200).json({
       status: "success",
@@ -55,7 +36,7 @@ exports.getAllBlogposts = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: "fail",
-      message: err,
+      message: err.message,
     });
   }
 };
