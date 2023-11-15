@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const blogpostSchema = new mongoose.Schema({
   title: {
@@ -33,6 +34,12 @@ const blogpostSchema = new mongoose.Schema({
     required: [true, "A blogpost must be attached to user who writes it"],
   },
 });
+
+blogpostSchema.pre("save", function (next) {
+  this.slug = slugify(this.title, { lower: true });
+  next();
+});
+
 const Blogpost = mongoose.model("Blogpost", blogpostSchema);
 
 module.exports = Blogpost;
