@@ -24,6 +24,7 @@ const blogpostSchema = new mongoose.Schema({
       "Blog content must have more than or equal to 26 characters",
     ],
   },
+  tags: [String],
   createdAt: {
     type: Date,
     default: Date.now(),
