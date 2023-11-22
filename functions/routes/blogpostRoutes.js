@@ -6,12 +6,12 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(authController.protect, blogpostController.getAllBlogposts)
-  .post(blogpostController.createBlogpost);
+  .get(blogpostController.getAllBlogposts)
+  .post(authController.protect, blogpostController.createBlogpost);
 router
   .route("/:id")
   .get(blogpostController.getBlogpost)
-  .patch(blogpostController.updateBlogpost)
-  .delete(blogpostController.deleteBlogpost);
+  .patch(authController.protect, blogpostController.updateBlogpost)
+  .delete(authController.protect, blogpostController.deleteBlogpost);
 
 module.exports = router;
