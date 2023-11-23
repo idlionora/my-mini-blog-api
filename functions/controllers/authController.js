@@ -181,7 +181,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("+password");
   //req.user comes from authController.protect
 
-  console.log("HELLOOO");
   if (
     !(await user.hasCorrectPassword(req.body.passwordCurrent, user.password))
   ) {
