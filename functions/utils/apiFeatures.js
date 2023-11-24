@@ -1,3 +1,46 @@
+function addCreatedAtDesc(queryObj) {
+  const newQueryObj = { ...queryObj };
+
+  if (newQueryObj.createdAt && typeof newQueryObj.createdAt === "object") {
+    const timingKeys = Object.keys(newQueryObj.createdAt);
+    timingKeys.forEach((key) => {
+      newQueryObj.createdAt[key] = new Date(`${newQueryObj.createdAt[key]}`);
+    });
+  }
+
+  if (newQueryObj.createdAt && typeof newQueryObj.createdAt === "string") {
+    let createdFrom;
+    let createdTo;
+
+    if (newQueryObj.createdAt.includes(",")) {
+      const createdAtArr = newQueryObj.createdAt.split(",");
+      createdFrom = createdAtArr[0].trim();
+      createdTo = createdAtArr[1].trim();
+    } else {
+      createdFrom = newQueryObj.createdAt;
+      createdTo = newQueryObj.createdAt;
+    }
+    newQueryObj.createdAt = {
+      $gte: new Date(`${createdFrom}T00:00:00.000Z`),
+      $lte: new Date(`${createdTo}T23:59:59.000Z`),
+    };
+  }
+  return newQueryObj;
+}
+
+function addRegexCaseInsensitive(queryObj) {
+  const newQueryObj = { ...queryObj };
+  const queryArr = Object.keys(newQueryObj);
+
+  for (let i = 0; i < queryArr.length; i += 1) {
+    const currentQuery = queryArr[i];
+    if (newQueryObj[currentQuery].$regex) {
+      newQueryObj[currentQuery].$options = "i";
+    }
+  }
+  return newQueryObj;
+}
+
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
@@ -5,23 +48,21 @@ class APIFeatures {
   }
 
   filter() {
-    const queryObj = { ...this.queryString };
+    let queryObj = { ...this.queryString };
     const excludedFields = ["page", "sort", "limit", "fields"];
     excludedFields.forEach((el) => delete queryObj[el]);
-
-    if (queryObj.createdAt) {
-      const timingKeys = Object.keys(queryObj.createdAt);
-      timingKeys.forEach((key) => {
-        queryObj.createdAt[key] = new Date(`${queryObj.createdAt[key]}`);
-      });
-    }
 
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(
       /\b(gte|gt|lte|lt|regex)\b/g,
       (match) => `$${match}`,
     );
-    this.query = this.query.find(JSON.parse(queryStr));
+
+    queryObj = JSON.parse(queryStr);
+    queryObj = addCreatedAtDesc(queryObj);
+    queryObj = addRegexCaseInsensitive(queryObj);
+
+    this.query = this.query.find(queryObj);
 
     return this;
   }
