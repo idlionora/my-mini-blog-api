@@ -15,7 +15,13 @@ exports.createBlogpost = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllBlogposts = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Blogpost.find(), req.query)
+  const features = new APIFeatures(
+    Blogpost.find().populate({
+      path: "author",
+      select: "name",
+    }),
+    req.query,
+  )
     .filter()
     .sort()
     .limitFields()
@@ -30,7 +36,12 @@ exports.getAllBlogposts = catchAsync(async (req, res, next) => {
 });
 
 exports.getBlogpost = catchAsync(async (req, res, next) => {
-  const blogpost = await Blogpost.findById(req.params.id);
+  const blogpost = await Blogpost.findById(req.params.id)
+    .populate({
+      path: "author",
+      select: "name photo",
+    })
+    .populate("comments");
 
   if (!blogpost) {
     return next(new AppError("No blogpost found with that ID", 404));

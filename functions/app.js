@@ -8,8 +8,9 @@ const hpp = require("hpp");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
-const blogpostRouter = require("./routes/blogpostRoutes");
 const userRouter = require("./routes/userRoutes");
+const blogpostRouter = require("./routes/blogpostRoutes");
+const commentRouter = require("./routes/commentRoutes");
 
 const app = express();
 
@@ -34,8 +35,9 @@ app.use(hpp({ whitelist: ["user"] }));
 
 app.use(express.static(`${__dirname}/../dist`));
 
-app.use("/api/v1/blogposts", blogpostRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/blogposts", blogpostRouter);
+app.use("/api/v1/comments", commentRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
