@@ -4,6 +4,7 @@ const commentSchema = new mongoose.Schema(
   {
     comment: { type: String, required: [true, "Comment can not be empty!"] },
     createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
     blogpost: {
       type: mongoose.Schema.ObjectId,
       ref: "Blogpost",
@@ -23,9 +24,6 @@ const commentSchema = new mongoose.Schema(
 
 commentSchema.pre(/^find/, function (next) {
   this.populate({
-    path: "blogpost",
-    select: "title",
-  }).populate({
     path: "user",
     select: "name photo",
   });

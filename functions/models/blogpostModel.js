@@ -13,7 +13,7 @@ const blogpostSchema = new mongoose.Schema(
       ],
       unique: true,
     },
-    slug: String,
+    slug: { type: String, unique: true },
     thumbnail: String,
     banner: String,
     content: {
@@ -30,7 +30,11 @@ const blogpostSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-    author: {
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
       required: [true, "A blogpost must be attached to user who writes it."],
@@ -49,7 +53,7 @@ blogpostSchema.virtual("comments", {
 });
 
 blogpostSchema.pre("save", function (next) {
-  this.slug = slugify(this.title, { lower: true });
+  this.slug = slugify(this.title, { lower: true, strict: true });
   next();
 });
 
