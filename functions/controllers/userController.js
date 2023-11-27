@@ -2,16 +2,22 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const filterObj = require("../utils/filterObj");
+const factory = require("./handlerFactory");
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
+exports.setNameParamToSearchUser = (req, res, next) => {
+  if (req.params.nameRegex) {
+    req.query.name = { regex: req.params.nameRegex };
+    req.query.fields = "name";
+    req.query.sort = "name";
+  }
+  next();
+};
 
-  res.status(200).json({
-    status: "success",
-    results: users.length,
-    data: users,
-  });
-});
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+
+// Do NOT update passwords with this!
+exports.updateUser = factory.updateOne(User);
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
@@ -39,6 +45,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteUser = factory.deleteOne(User);
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
 

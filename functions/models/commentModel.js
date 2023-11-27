@@ -23,10 +23,17 @@ const commentSchema = new mongoose.Schema(
 );
 
 commentSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "user",
-    select: "name photo",
-  });
+  this.populate({ path: "blogpost", select: "title" });
+  next();
+});
+
+commentSchema.pre(/^find/, function (next) {
+  if (!this._conditions.user) {
+    this.populate({
+      path: "user",
+      select: "name photo",
+    });
+  }
   next();
 });
 
