@@ -10,6 +10,7 @@ exports.createComment = factory.createOne(Comment);
 
 exports.setSearchCommentsBlogpostId = (req, res, next) => {
   if (req.params.blogpostId) req.query.blogpost = req.params.blogpostId;
+  req.query.sort = "createdAt";
   next();
 };
 exports.getAllComments = factory.getAll(Comment);

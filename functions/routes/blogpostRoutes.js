@@ -15,10 +15,23 @@ router
     blogpostController.setCreateBlogpostUserId,
     blogpostController.createBlogpost,
   );
+
+router.get("/allTags", blogpostController.getAllTags);
+router.get("/tags", blogpostController.getAllBlogposts);
+router.get(
+  "/tags/:tag",
+  blogpostController.setSearchBlogpostsTags,
+  blogpostController.getAllBlogposts,
+);
+
 router
   .route("/:id")
   .get(blogpostController.getBlogpost)
   .patch(authController.protect, blogpostController.updateBlogpost)
-  .delete(authController.protect, blogpostController.deleteBlogpost);
+  .delete(
+    authController.protect,
+    blogpostController.deleteBlogpostComments,
+    blogpostController.deleteBlogpost,
+  );
 
 module.exports = router;

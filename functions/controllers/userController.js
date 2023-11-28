@@ -16,6 +16,11 @@ exports.setNameParamToSearchUser = (req, res, next) => {
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 // Do NOT update passwords with this!
 exports.updateUser = factory.updateOne(User);
 

@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
-const Comment = require("./commentModel");
 
 const blogpostSchema = new mongoose.Schema(
   {
@@ -40,12 +39,18 @@ const blogpostSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "A blogpost must be attached to user who writes it."],
     },
+    commentCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   },
 );
+
+blogpostSchema.index({ user: 1 });
 
 blogpostSchema.virtual("comments", {
   ref: "Comment",
@@ -55,11 +60,6 @@ blogpostSchema.virtual("comments", {
 
 blogpostSchema.pre("save", function (next) {
   this.slug = slugify(this.title, { lower: true, strict: true });
-  next();
-});
-
-blogpostSchema.pre("findOneAndDelete", async function (next) {
-  await Comment.deleteMany({ blogpost: this._conditions._id });
   next();
 });
 
