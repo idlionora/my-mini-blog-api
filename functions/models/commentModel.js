@@ -41,7 +41,10 @@ commentSchema.pre(/^find/, function (next) {
   next();
 });
 
-commentSchema.statics.calcCommentsPerPost = async function (blogpostId) {
+commentSchema.statics.calcCommentsPerPost = async function (
+  blogpostId,
+  numMargin,
+) {
   const commentCount = await this.aggregate([
     {
       $match: { blogpost: blogpostId },
@@ -53,28 +56,23 @@ commentSchema.statics.calcCommentsPerPost = async function (blogpostId) {
       },
     },
   ]);
-  return commentCount[0].commentsNum;
+  await Blogpost.findByIdAndUpdate(blogpostId, {
+    commentCount: commentCount[0].commentsNum + (numMargin || 0),
+  });
 };
 
 commentSchema.post("save", async function () {
   if (this.createdAt.toISOString() === this.updatedAt.toISOString()) {
-    const commentsNum = await this.constructor.calcCommentsPerPost(
-      this.blogpost,
-    );
-    await Blogpost.findByIdAndUpdate(this.blogpost, {
-      commentCount: commentsNum,
-    });
+    await this.constructor.calcCommentsPerPost(this.blogpost);
   }
 });
 
 commentSchema.pre("findOneAndDelete", async function (next) {
   const deletedComment = await this.findOne().clone();
-  const commentsNum = await deletedComment.constructor.calcCommentsPerPost(
+  await deletedComment.constructor.calcCommentsPerPost(
     deletedComment.blogpost._id,
+    -1,
   );
-  await Blogpost.findByIdAndUpdate(deletedComment.blogpost._id, {
-    commentCount: commentsNum - 1,
-  });
   next();
 });
 
