@@ -1,0 +1,39 @@
+profilepic navbar: h-11, w-11 => 44px
+SAVE: 110px x 110px
+
+blog card (blogpostImg)
+h-45vw
+max-h-[194.848px] -> 195px
+sm:h-44 => 176px
+md:h-40 => 160px
+lg:h-32 => 128px
+2:3
+min size: 390px x 195px //390px x 260px
+
+see if it below 420 x 280, if yes no resize
+if no, resize to min 420x280
+SAVE: 420px x 280px 
+
+explore card (blogthumbImg)
+h-[104px]
+min-w-[96px]
+prioritize height
+height to 200px cut5:4
+
+banner image
+w-full
+max-w-[82.5rem] => 1320px
+h-40 => 160px
+sm:h-48 => 192px
+md:h-52 => 208px
+lg:h-56 => 224px
+ 
+165:28
+~6:1
+
+resize min-w and min-h
+
+SAVE
+resize min 1280 x 300
+if h > 720 cut to 720 at center 
+
