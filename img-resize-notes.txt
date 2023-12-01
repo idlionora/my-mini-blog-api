@@ -1,3 +1,6 @@
+save profile-picture by email and rename the profile picture if email changed
+save blog images by slug and rename the images if slug changed
+
 profilepic navbar: h-11, w-11 => 44px
 SAVE: 110px x 110px
 
