@@ -1,8 +1,62 @@
+const multer = require("multer");
+const sharp = require("sharp");
+const cloudinary = require("cloudinary").v2;
+const cloudinaryUploadStream = require("../utils/cloudinaryUploadStream");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const filterObj = require("../utils/filterObj");
 const factory = require("./handlerFactory");
+
+const multerStorage = multer.memoryStorage();
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("Not an image! Please upload only images.", 400), false);
+  }
+};
+const maxSize = 2 * 1000 * 1000;
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+  limits: { fileSize: maxSize },
+});
+
+exports.uploadUserPhotoToMemory = upload.single("photo");
+
+exports.uploadUserPhotoToCloud = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  const currentEmail = req.body.email
+    ? req.body.email.split("@")[0]
+    : req.user.email.split("@")[0];
+
+  if (req.user.photo !== "/my-mini-blog/user/default.jpg") {
+    await cloudinary.uploader.destroy(`my-mini-blog/user/${currentEmail}`, {
+      invalidate: true,
+    });
+  }
+
+  const sharpPhoto = await sharp(req.file.buffer)
+    .resize(200, 200, {
+      fit: "cover",
+    })
+    .toFormat("jpeg")
+    .jpeg({ mozjpeg: true })
+    .keepExif()
+    .toBuffer();
+
+  const result = await cloudinaryUploadStream(
+    sharpPhoto,
+    currentEmail,
+    "my-mini-blog/user",
+  );
+
+  const urlArr = result.url.split("/");
+  req.body.photo = `/${urlArr.slice(urlArr.length - 4).join("/")}`;
+  next();
+});
 
 exports.setNameParamToSearchUser = (req, res, next) => {
   if (req.params.nameRegex) {
@@ -34,8 +88,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  const filteredBody = filterObj(req.body, "name", "email");
-  if (req.file) filteredBody.photo = req.file.filename;
+  const filteredBody = filterObj(req.body, "name", "email", "photo");
+  // if (req.file) filteredBody.photo = req.file.filename;
 
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,

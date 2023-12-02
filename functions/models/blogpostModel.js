@@ -14,8 +14,18 @@ const blogpostSchema = new mongoose.Schema(
       unique: true,
     },
     slug: { type: String, unique: true },
-    thumbnail: String,
-    banner: String,
+    blogpostImg: {
+      type: String,
+      default: "my-mini-blog/post_img/default.jpg",
+    },
+    blogthumbImg: {
+      type: String,
+      default: "my-mini-blog/thumb_img/default.jpg",
+    },
+    bannerImg: {
+      type: String,
+      default: "my-mini-blog/banner_img/default.jpg",
+    },
     content: {
       type: String,
       required: [true, "A blogpost must have some text content."],

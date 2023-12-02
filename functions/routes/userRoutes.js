@@ -28,7 +28,13 @@ router.get(
   userController.getMe,
   userController.getUser,
 );
-router.patch("/updateMe", authController.protect, userController.updateMe);
+router.patch(
+  "/updateMe",
+  authController.protect,
+  userController.uploadUserPhotoToMemory,
+  userController.uploadUserPhotoToCloud,
+  userController.updateMe,
+);
 router.delete("/deleteme", authController.protect, userController.deleteMe);
 
 router.get(
