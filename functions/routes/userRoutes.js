@@ -33,6 +33,7 @@ router.patch(
   authController.protect,
   userController.uploadUserPhotoToMemory,
   userController.uploadUserPhotoToCloud,
+  userController.updatePhotoWhenEmailsChanged,
   userController.updateMe,
 );
 router.delete("/deleteme", authController.protect, userController.deleteMe);
