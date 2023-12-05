@@ -6,7 +6,6 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const filterObj = require("../utils/filterObj");
-const validateUnique = require("../utils/validateUnique");
 const factory = require("./handlerFactory");
 
 const multerStorage = multer.memoryStorage();
@@ -17,7 +16,7 @@ const multerFilter = (req, file, cb) => {
     cb(new AppError("Not an image! Please upload only images.", 400), false);
   }
 };
-const maxSize = 2 * 1000 * 1000;
+const maxSize = 3 * 1000 * 1000;
 
 const upload = multer({
   storage: multerStorage,
@@ -29,61 +28,33 @@ exports.uploadUserPhotoToMemory = upload.single("photo");
 
 exports.uploadUserPhotoToCloud = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
-  if (req.body.email) {
-    const isNewEmailUnique = await validateUnique("email", req.body.email);
-    if (!isNewEmailUnique) return next();
-  }
-
-  const prevEmail = req.user.email.split("@")[0];
-  const emailName = req.body.email ? req.body.email.split("@")[0] : prevEmail;
 
   if (req.user.photo !== "/my-mini-blog/user/default.jpg") {
-    await cloudinary.uploader.destroy(`my-mini-blog/user/${prevEmail}`, {
-      invalidate: true,
-    });
+    await cloudinary.uploader.destroy(
+      `my-mini-blog/user/profile-${req.user.id}`,
+      {
+        invalidate: true,
+      },
+    );
   }
+  req.body.photo = "/my-mini-blog/user/default.jpg";
 
   const sharpPhoto = await sharp(req.file.buffer)
     .resize(200, 200, {
       fit: "cover",
     })
     .toFormat("jpeg")
-    .jpeg({ mozjpeg: true })
+    .jpeg({ quality: 90, mozjpeg: true })
     .keepExif()
     .toBuffer();
 
   const result = await cloudinaryUploadStream(
     sharpPhoto,
-    emailName,
+    `profile-${req.user.id}`,
     "my-mini-blog/user",
   );
 
   const urlArr = result.url.split("/");
-  req.body.photo = `/${urlArr.slice(urlArr.length - 4).join("/")}`;
-  next();
-});
-
-exports.updatePhotoWhenEmailsChanged = catchAsync(async (req, res, next) => {
-  if (
-    req.file ||
-    !req.body.email ||
-    req.user.photo === "/my-mini-blog/user/default.jpg"
-  ) {
-    return next();
-  }
-  const isNewEmailUnique = await validateUnique("email", req.body.email);
-  if (!isNewEmailUnique) return next();
-
-  const prevEmail = req.user.email.split("@")[0];
-  const currentEmail = req.body.email.split("@")[0];
-  const renamedFile = await cloudinary.uploader.rename(
-    `my-mini-blog/user/${prevEmail}`,
-    `my-mini-blog/user/${currentEmail}`,
-    {
-      invalidate: true,
-    },
-  );
-  const urlArr = renamedFile.url.split("/");
   req.body.photo = `/${urlArr.slice(urlArr.length - 4).join("/")}`;
   next();
 });
