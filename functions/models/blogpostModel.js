@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const cloudinary = require("cloudinary").v2;
 const slugify = require("slugify");
 
 const blogpostSchema = new mongoose.Schema(
@@ -16,15 +17,15 @@ const blogpostSchema = new mongoose.Schema(
     slug: { type: String, unique: true },
     blogpostImg: {
       type: String,
-      default: "my-mini-blog/post_img/default.jpg",
+      default: "/my-mini-blog/post_img/default.jpg",
     },
     blogthumbImg: {
       type: String,
-      default: "my-mini-blog/thumb_img/default.jpg",
+      default: "/my-mini-blog/thumb_img/default.jpg",
     },
     bannerImg: {
       type: String,
-      default: "my-mini-blog/banner_img/default.jpg",
+      default: "/my-mini-blog/banner_img/default.jpg",
     },
     content: {
       type: String,
@@ -53,6 +54,16 @@ const blogpostSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    blogpostImgUpdate: {
+      type: Boolean,
+      default: false,
+      select: false,
+    },
+    bannerImgUpdate: {
+      type: Boolean,
+      default: false,
+      select: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -72,6 +83,22 @@ blogpostSchema.pre("save", function (next) {
   this.slug = slugify(this.title, { lower: true, strict: true });
   next();
 });
+
+// blogpostSchema.post("save", async function () {
+//   if (!this.bannerImgUpdate) return;
+//   const destroyTag = `banner-${this.id}-destroynext`;
+
+//   await cloudinary.api.delete_resources_by_tag(destroyTag, {
+//     folder: "my-mini-blog/banner_img",
+//     invalidate: true,
+//   });
+
+//   if (this.bannerImg === "/my-mini-blog/banner_img/default.jpg") return;
+//   const pathArray = this.bannerImg.slice(1).replace(".jpg", "").split["/"];
+//   const cloudFilename = pathArray.slice(1).join("/");
+
+//   cloudinary.uploader.add_tag(destroyTag, [cloudFilename]);
+// });
 
 const Blogpost = mongoose.model("Blogpost", blogpostSchema);
 

@@ -6,6 +6,10 @@ exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const newDoc = await Model.create(req.body);
 
+    // hide {select: false} key-value pairs
+    newDoc.blogpostImgUpdate = undefined;
+    newDoc.bannerImgUpdate = undefined;
+
     res.status(201).json({
       status: "success",
       data: {
@@ -78,7 +82,9 @@ exports.updateOne = (Model) =>
 
 exports.updateOneForUserOnly = (Model) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findById(req.params.id);
+    const doc = await Model.findById(req.params.id).select(
+      "+blogpostImgUpdate +bannerImgUpdate",
+    );
 
     if (!doc) {
       return next(new AppError("No document found with that ID", 404));
@@ -100,6 +106,10 @@ exports.updateOneForUserOnly = (Model) =>
 
     doc.updatedAt = Date.now();
     await doc.save({ validateBeforeSave: true });
+
+    // remove {select:false} from doc
+    doc.blogpostImgUpdate = undefined;
+    doc.bannerImgUpdate = undefined;
 
     res.status(200).json({
       status: "success",

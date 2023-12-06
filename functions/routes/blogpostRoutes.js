@@ -27,7 +27,14 @@ router.get(
 router
   .route("/:id")
   .get(blogpostController.getBlogpost)
-  .patch(authController.protect, blogpostController.updateBlogpost)
+  .patch(
+    authController.protect,
+    blogpostController.uploadBlogpostImages,
+    blogpostController.setImgUpdatesFalse,
+    blogpostController.uploadBannerImgToCloud,
+    blogpostController.uploadBlogpostImgToCloud,
+    blogpostController.updateBlogpost,
+  )
   .delete(
     authController.protect,
     blogpostController.deleteBlogpostComments,

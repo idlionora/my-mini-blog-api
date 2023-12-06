@@ -1,7 +1,75 @@
+const multer = require("multer");
+const sharp = require("sharp");
+const cloudinaryUploadStream = require("../utils/cloudinaryUploadStream");
 const Blogpost = require("../models/blogpostModel");
 const Comment = require("../models/commentModel");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 const factory = require("./handlerFactory");
+
+const multerStorage = multer.memoryStorage();
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("Not an image! Please upload only images.", 400), false);
+  }
+};
+const maxSize = 6 * 1000 * 1000;
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+  limits: { fileSize: maxSize },
+});
+
+exports.uploadBlogpostImages = upload.fields([
+  { name: "bannerImg", maxCount: 1 },
+  { name: "blogpostImg", maxCount: 1 },
+]);
+
+// function getImageSize({ width, height, orientation }) {
+//   return (orientation || 0) >= 5
+//     ? { width: height, height: width }
+//     : { width, height };
+// }
+
+exports.setImgUpdatesFalse = (req, res, next) => {
+  req.body.blogpostImgUpdate = false;
+  req.body.bannerImgUpdate = false;
+  next();
+};
+
+exports.uploadBannerImgToCloud = catchAsync(async (req, res, next) => {
+  if (!req.files || !req.files.bannerImg) return next();
+  req.body.bannerImgUpdate = true;
+
+  const bannerImgBuffer = req.files.bannerImg[0].buffer;
+
+  const sharpBuffer = await sharp(bannerImgBuffer)
+    .resize(1920, 1080, { fit: "inside" })
+    .toFormat("jpeg")
+    .jpeg({ quality: 90, mozjpeg: true })
+    .keepExif()
+    .toBuffer();
+
+  const currentDate = new Date().toISOString().split("T")[0];
+
+  const bannerUploaded = await cloudinaryUploadStream(
+    sharpBuffer,
+    `banner-${req.params.id}-${currentDate}`,
+  );
+
+  const urlArr = bannerUploaded.url.split("/");
+  req.body.bannerImg = `/${urlArr.slice(urlArr.length - 4).join("/")}`;
+  next();
+});
+
+exports.uploadBlogpostImgToCloud = (req, res, next) => {
+  if (!req.files || !req.files.BlogpostImg) return next();
+
+  next();
+};
 
 exports.setCreateBlogpostUserId = (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id;
