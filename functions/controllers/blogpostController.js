@@ -28,36 +28,49 @@ exports.uploadBlogpostImages = upload.fields([
   { name: "blogpostImg", maxCount: 1 },
 ]);
 
-// function getImageSize({ width, height, orientation }) {
-//   return (orientation || 0) >= 5
-//     ? { width: height, height: width }
-//     : { width, height };
-// }
-
 exports.setImgUpdatesFalse = (req, res, next) => {
   req.body.blogpostImgUpdate = false;
   req.body.bannerImgUpdate = false;
   next();
 };
 
+function getImageSize({ width, height, orientation }) {
+  return (orientation || 0) >= 5
+    ? { width: height, height: width }
+    : { width, height };
+}
+
 exports.uploadBannerImgToCloud = catchAsync(async (req, res, next) => {
   if (!req.files || !req.files.bannerImg) return next();
   req.body.bannerImgUpdate = true;
 
   const bannerImgBuffer = req.files.bannerImg[0].buffer;
+  const imgSize = getImageSize(await sharp(bannerImgBuffer).metadata());
+  let sharpBuffer;
 
-  const sharpBuffer = await sharp(bannerImgBuffer)
-    .resize(1920, 1080, { fit: "inside" })
-    .toFormat("jpeg")
-    .jpeg({ quality: 90, mozjpeg: true })
-    .keepExif()
-    .toBuffer();
+  if (imgSize.width / imgSize.height < 16 / 9) {
+    sharpBuffer = await sharp(bannerImgBuffer)
+      .resize(1920, 1080, { fit: "cover" })
+      .toFormat("jpeg")
+      .jpeg({ quality: 90, mozjpeg: true })
+      .keepExif()
+      .toBuffer();
+  } else {
+    sharpBuffer = await sharp(bannerImgBuffer)
+      .resize(1920, 1080, { fit: "inside" })
+      .toFormat("jpeg")
+      .jpeg({ quality: 90, mozjpeg: true })
+      .keepExif()
+      .toBuffer();
+  }
 
   const currentDate = new Date().toISOString().split("T")[0];
+  const dateMilliseconds = new Date().getMilliseconds();
 
   const bannerUploaded = await cloudinaryUploadStream(
     sharpBuffer,
-    `banner-${req.params.id}-${currentDate}`,
+    `banner-${req.params.id}_${currentDate}-${dateMilliseconds}`,
+    "my-mini-blog/banner_img",
   );
 
   const urlArr = bannerUploaded.url.split("/");
