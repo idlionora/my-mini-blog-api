@@ -1,6 +1,6 @@
-const multer = require("multer");
 const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
+const { uploadToMemory: upload } = require("../utils/multerImage");
 const cloudinaryUploadStream = require("../utils/cloudinaryUploadStream");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
@@ -8,23 +8,9 @@ const AppError = require("../utils/appError");
 const filterObj = require("../utils/filterObj");
 const factory = require("./handlerFactory");
 
-const multerStorage = multer.memoryStorage();
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new AppError("Not an image! Please upload only images.", 400), false);
-  }
-};
 const maxSize = 3 * 1000 * 1000;
 
-const upload = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
-  limits: { fileSize: maxSize },
-});
-
-exports.uploadUserPhotoToMemory = upload.single("photo");
+exports.uploadUserPhotoToMemory = upload(maxSize).single("photo");
 
 exports.uploadUserPhotoToCloud = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
