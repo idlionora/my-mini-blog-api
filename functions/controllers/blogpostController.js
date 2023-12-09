@@ -1,18 +1,16 @@
-const sharp = require("sharp");
 const { uploadToMemory } = require("../utils/multerImage");
 const {
-  getImageSize,
-  generateSharpBuffer,
+  // generateSharpBuffer,
   uploadImgToCloudinary,
   getImgUrl,
 } = require("./blogpostControllerFunc");
+const BufferGenerator = require("../utils/bufferGenerator");
 const Blogpost = require("../models/blogpostModel");
 const Comment = require("../models/commentModel");
 const catchAsync = require("../utils/catchAsync");
 const factory = require("./handlerFactory");
 
 const maxSize = 6 * 1000 * 1000;
-
 exports.uploadBlogpostImages = uploadToMemory(maxSize).fields([
   { name: "bannerImg", maxCount: 1 },
   { name: "blogpostImg", maxCount: 1 },
@@ -28,31 +26,48 @@ exports.uploadBannerImgToCloud = catchAsync(async (req, res, next) => {
   if (!req.files || !req.files.bannerImg) return next();
   req.body.bannerImgUpdate = true;
 
-  const bufferSource = req.files.bannerImg[0].buffer;
-  const inputSize = getImageSize(await sharp(bufferSource).metadata());
+  const bannerImgSource = new BufferGenerator(req.files.bannerImg[0].buffer);
   const outputSize = { width: 1920, height: 1080 };
+  const bannerImgBuffer =
+    await bannerImgSource.generateImgBufferPrioritizeWidth(outputSize);
 
-  const bannerImgBuffer = await generateSharpBuffer(
-    bufferSource,
-    inputSize,
-    outputSize,
-  );
-
+  const identifier = { flag: "banner", modelId: req.params.id };
   const bannerUploaded = await uploadImgToCloudinary(
     bannerImgBuffer,
-    "banner",
-    req.params.id,
+    identifier,
   );
 
   req.body.bannerImg = getImgUrl(bannerUploaded);
   next();
 });
 
-exports.uploadBlogpostImgToCloud = (req, res, next) => {
+exports.uploadBlogpostImgToCloud = catchAsync(async (req, res, next) => {
   if (!req.files || !req.files.BlogpostImg) return next();
+  req.body.blogpostImgUpdate = true;
+
+  const imgSource = req.files.BlogpostImg[0].buffer;
+
+  const postImgSize = { width: 600, height: 400 };
+  const postImgBuffer =
+    await imgSource.generateImgBufferPrioritizeWidth(postImgSize);
+
+  const postImgId = { flag: "blogpost", modelId: req.params.id };
+  const postImgUploaded = await uploadImgToCloudinary(postImgBuffer, postImgId);
+  req.body.blogpostImg = getImgUrl(postImgUploaded);
+
+  const thumbImgSize = { width: 250, height: 200 };
+  const thumbImgBuffer =
+    await imgSource.generateImgBufferPrioritizeHeight(thumbImgSize);
+
+  const thumbImgId = { flag: "blogthumb", modelId: req.params.id };
+  const thumbImgUploaded = await uploadImgToCloudinary(
+    thumbImgBuffer,
+    thumbImgId,
+  );
+  req.body.blogthumbImg = getImgUrl(thumbImgUploaded);
 
   next();
-};
+});
 
 exports.setCreateBlogpostUserId = (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id;
