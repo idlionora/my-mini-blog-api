@@ -84,19 +84,34 @@ blogpostSchema.pre("save", function (next) {
   next();
 });
 
-blogpostSchema.post("save", async function () {
-  if (!this.bannerImgUpdate) return;
-  const destroyTag = `banner-${this.id}-destroynext`;
+async function tagCycleImg(doc, itemFlag) {
+  if (doc[`${itemFlag}Img`] === `/my-mini-blog/${itemFlag}_img/default/jpg`) {
+    return;
+  }
+  const destroyTag = `${itemFlag}-${doc.id}-destroynext`;
 
   await cloudinary.api.delete_resources_by_tag(destroyTag, {
     invalidate: true,
   }); // indiscriminate delete to all directories, tag carefully!
 
-  if (this.bannerImg === "/my-mini-blog/banner_img/default.jpg") return;
-  const pathArray = this.bannerImg.slice(1).replace(".jpg", "").split("/");
+  const pathArray = doc[`${itemFlag}Img`]
+    .slice(1)
+    .replace(".jpg", "")
+    .split("/");
   const cloudFilename = pathArray.slice(1).join("/");
 
   cloudinary.uploader.add_tag(destroyTag, [cloudFilename]);
+}
+
+blogpostSchema.post("save", async function () {
+  if (!this.bannerImgUpdate) return;
+  tagCycleImg(this, "banner");
+});
+
+blogpostSchema.post("save", async function () {
+  if (!this.blogpostImgUpdate) return;
+  tagCycleImg(this, "blogpost");
+  tagCycleImg(this, "blogthumb");
 });
 
 const Blogpost = mongoose.model("Blogpost", blogpostSchema);

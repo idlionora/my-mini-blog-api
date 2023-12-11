@@ -6,7 +6,7 @@ function parseImgSize({ width, height, orientation }) {
     : { width, height };
 }
 
-class BufferGenerator {
+class ImgBufferGenerator {
   constructor(bufferSource) {
     this.bufferSource = bufferSource;
   }
@@ -47,4 +47,4 @@ class BufferGenerator {
   }
 }
 
-module.exports = BufferGenerator;
+module.exports = ImgBufferGenerator;

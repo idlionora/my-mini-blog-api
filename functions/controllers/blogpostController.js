@@ -1,10 +1,9 @@
 const { uploadToMemory } = require("../utils/multerImage");
 const {
-  // generateSharpBuffer,
   uploadImgToCloudinary,
   getImgUrl,
 } = require("./blogpostControllerFunc");
-const BufferGenerator = require("../utils/bufferGenerator");
+const ImgBufferGenerator = require("../utils/imgBufferGenerator");
 const Blogpost = require("../models/blogpostModel");
 const Comment = require("../models/commentModel");
 const catchAsync = require("../utils/catchAsync");
@@ -26,7 +25,7 @@ exports.uploadBannerImgToCloud = catchAsync(async (req, res, next) => {
   if (!req.files || !req.files.bannerImg) return next();
   req.body.bannerImgUpdate = true;
 
-  const bannerImgSource = new BufferGenerator(req.files.bannerImg[0].buffer);
+  const bannerImgSource = new ImgBufferGenerator(req.files.bannerImg[0].buffer);
   const outputSize = { width: 1920, height: 1080 };
   const bannerImgBuffer =
     await bannerImgSource.generateImgBufferPrioritizeWidth(outputSize);
@@ -42,10 +41,10 @@ exports.uploadBannerImgToCloud = catchAsync(async (req, res, next) => {
 });
 
 exports.uploadBlogpostImgToCloud = catchAsync(async (req, res, next) => {
-  if (!req.files || !req.files.BlogpostImg) return next();
+  if (!req.files || !req.files.blogpostImg) return next();
   req.body.blogpostImgUpdate = true;
 
-  const imgSource = req.files.BlogpostImg[0].buffer;
+  const imgSource = new ImgBufferGenerator(req.files.blogpostImg[0].buffer);
 
   const postImgSize = { width: 600, height: 400 };
   const postImgBuffer =
@@ -56,8 +55,7 @@ exports.uploadBlogpostImgToCloud = catchAsync(async (req, res, next) => {
   req.body.blogpostImg = getImgUrl(postImgUploaded);
 
   const thumbImgSize = { width: 250, height: 200 };
-  const thumbImgBuffer =
-    await imgSource.generateImgBufferPrioritizeHeight(thumbImgSize);
+  const thumbImgBuffer = await imgSource.getSharpBuffer(thumbImgSize, "cover");
 
   const thumbImgId = { flag: "blogthumb", modelId: req.params.id };
   const thumbImgUploaded = await uploadImgToCloudinary(

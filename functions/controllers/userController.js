@@ -1,6 +1,6 @@
-const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
 const { uploadToMemory: upload } = require("../utils/multerImage");
+const ImgBufferGenerator = require("../utils/imgBufferGenerator");
 const cloudinaryUploadStream = require("../utils/cloudinaryUploadStream");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
@@ -25,14 +25,11 @@ exports.uploadUserPhotoToCloud = catchAsync(async (req, res, next) => {
   }
   req.body.photo = "/my-mini-blog/user/default.jpg";
 
-  const sharpPhoto = await sharp(req.file.buffer)
-    .resize(200, 200, {
-      fit: "cover",
-    })
-    .toFormat("jpeg")
-    .jpeg({ quality: 90, mozjpeg: true })
-    .keepExif()
-    .toBuffer();
+  const bufferSource = new ImgBufferGenerator(req.file.buffer);
+  const sharpPhoto = await bufferSource.getSharpBuffer(
+    { width: 200, height: 200 },
+    "cover",
+  );
 
   const result = await cloudinaryUploadStream(
     sharpPhoto,
