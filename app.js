@@ -35,8 +35,6 @@ app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp({ whitelist: ["user"] }));
 
-app.use(express.static(`${__dirname}/../dist`));
-
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/blogposts", blogpostRouter);
 app.use("/api/v1/comments", commentRouter);

@@ -2,9 +2,9 @@
   "name": "my-mini-blog-api",
   "version": "1.0.0",
   "description": "express.js app for my-mini-blog hosted in netlify",
-  "main": "./functions/server.js",
+  "main": "./server.js",
   "scripts": {
-    "start": "nodemon",
+    "start": "nodemon server.js",
     "start:prod": "cross-env NODE_ENV=production nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

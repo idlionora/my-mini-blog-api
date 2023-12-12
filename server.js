@@ -7,7 +7,7 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 }); //need to listen before starting the app
 
-dotenv.config({ path: `${__dirname}/../config.env` });
+dotenv.config({ path: `${__dirname}/config.env` });
 const app = require("./app");
 
 const DB = process.env.DATABASE.replace(
