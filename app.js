@@ -6,6 +6,8 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const cookieParser = require("cookie-parser");
+const compression = require("compression");
+const cors = require("cors");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -14,6 +16,11 @@ const blogpostRouter = require("./routes/blogpostRoutes");
 const commentRouter = require("./routes/commentRoutes");
 
 const app = express();
+
+app.enable("trust proxy");
+
+app.use(cors());
+app.options("*", cors());
 
 app.use(helmet());
 
@@ -34,6 +41,8 @@ app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp({ whitelist: ["user"] }));
+
+app.use(compression());
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/blogposts", blogpostRouter);
