@@ -1,5 +1,5 @@
 # myMiniBlog's API
-myMiniBlog is a blog application built by integrating WYSIWYG editor into a ReactJS structure. The backend side of the application allows user to create an account, login, write blogs, and shares their comments. The API for myMiniBlog is served by Express.js application connected to MongoDB using Mongoose ODM. Image files are hosted in Cloudinary's platform after user uploaded their images through myMiniBlog's API.
+myMiniBlog is a blog application built by integrating What You See is What You Get text editor into a ReactJS structure. The backend side of the application allows user to create an account, login, write blogs, edit them, and then shares their comments. The API for myMiniBlog is served by Express.js application connected to MongoDB by using Mongoose ODM. Image files are hosted in Cloudinary's platform after user uploaded their images through myMiniBlog's API.
 
 ### Rate Limit
 There is a rate limit of **100 requests per hour** per IP address. If you exceed the rate limit, you will get an error message.
