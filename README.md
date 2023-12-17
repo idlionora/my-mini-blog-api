@@ -21,13 +21,13 @@ There is a rate limit of **100 requests per hour**, per IP address. If you excee
 - [Delete Current User](#delete-current-user)
 - [Delete User](#delete-user)
 ### Blogposts
-- [Create New Blogpost](#create-new-blogpost)
+- [Create New Blogpost](#create-new-blogpost) 🔒
 - [Get All Blogposts](#get-all-blogposts)
 - [Get All Tags](#get-all-tags)
 - [Get Blogposts by Tags](#get-blogposts-by-tags)
 - [Get Blogpost](#get-blogpost)
-- [Update Blogpost](#update-blogpost)
-- [Delete Blogpost](#delete-blogpost)
+- [Update Blogpost](#update-blogpost) 🔒
+- [Delete Blogpost](#delete-blogpost) 🔒
 ### Comments
 - [Create New Comment](#create-new-comment)
 - [Get All Comments](#get-all-comments)
@@ -81,7 +81,7 @@ POST /api/v1/blogposts
 {
   "status": "success",
   "data": {
-    "data": {
+    "doc": {
       "title": "User's New Post, 4 Characters Minimum",
       "blogpostImg": "/my-mini-blog/post_img/default.jpg",
       "blogthumbImg": "/my-mini-blog/thumb_img/default.jpg",
@@ -89,7 +89,6 @@ POST /api/v1/blogposts
       "content": "Insert long sentences here, 26 characters at minimum.",
       "tags": [
                 "personal",
-                "funny",
                 "daily-life"
       ],
       "createdAt": "2023-12-16T15:12:41.879Z",
@@ -118,6 +117,9 @@ Get all active blogposts that had been created before. The response is sorted by
 |createdAt[lte]|`String`|Get blogposts that are created in or before the date mentioned. Can be included alongside of `createdAt[gte]` param|
 |createdAt|`String`|Get blogposts in a range date by format of "YYYY-MM-DD,YYYY-MM-DD". Only select blogposts created in 24 hours if there's only one date present. API will return an error if `createdAt[gte]` or `createdAt[lte]` is also included|
 |user|`String`|Search blogposts that had been writen by userId|
+|limit|`Number`|How many blogposts that can be included in a single page. The default number of limit is 100 blogposts per page|
+|page|`Number`|Requested page number deducted from limit param and how many blogposts are found|
+
 
 ### Response
 ```JSON
@@ -151,7 +153,57 @@ Get all active blogposts that had been created before. The response is sorted by
 }
 ```
 ## Get All Tags
+```HTTP
+GET /api/v1/blogposts/alltags
+```
+Get all tags that had been used in myMiniBlog before. 
+
+### Response
+```JSON
+{
+  "status" : "success",
+  "data": {
+    "tags": [
+      "admin-post",
+      "daily-life",
+      "funny",
+      "personal",
+      "testing"
+    ]
+  }
+}
+```
 ## Get Blogposts by Tags
+```HTTP
+GET /api/v1/blogposts/tags/:tag
+```
+Get all blogposts by filtering its owned tags. You can input multiple tags by inserting the parameters divided by comma. Query filter works the same way as [Get All Blogposts](#get-all-blogposts) API endpoint. The response returned is also in the same format as Get All Blogposts' response.
+
+### Response
+```JSON
+{
+  "status": "success",
+  "results": 1,
+  "data": [
+    {
+      "title": "User's New Post, 4 Characters Minimum",
+      "blogpostImg": "/my-mini-blog/post_img/default.jpg",
+      "blogthumbImg": "/my-mini-blog/thumb_img/default.jpg",
+      "bannerImg": "/my-mini-blog/banner_img/default.jpg",
+      "content": "Insert long sentences here, 26 characters at minimum.",
+      "tags": [
+                "personal",
+      ],
+      "createdAt": "2023-12-16T15:12:41.879Z",
+      "updatedAt": "2023-12-16T15:12:41.879Z",
+      "user": "655f6a6feea8c6dc6f4f1227",
+      "commentCount": 2,
+      "slug": "users-new-post-4-characters-minimum",
+      "id": "657dc0cb998ee1e6ed20938c"          
+    }
+  ]
+}
+```
 ## Get Blogpost
 ## Update Blogpost
 ## Delete Blogpost
