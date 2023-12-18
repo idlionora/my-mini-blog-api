@@ -16,7 +16,7 @@ router
     blogpostController.createBlogpost,
   );
 
-router.get("/allTags", blogpostController.getAllTags);
+router.get("/alltags", blogpostController.getAllTags);
 router.get("/tags", blogpostController.getAllBlogposts);
 router.get(
   "/tags/:tag",

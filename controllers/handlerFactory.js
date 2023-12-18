@@ -13,7 +13,7 @@ exports.createOne = (Model) =>
     res.status(201).json({
       status: "success",
       data: {
-        data: newDoc,
+        doc: newDoc,
       },
     });
   });
@@ -56,7 +56,7 @@ exports.getOne = (Model, populateOptions) =>
     res.status(200).json({
       status: "success",
       data: {
-        data: doc,
+        doc: doc,
       },
     });
   });
@@ -75,7 +75,7 @@ exports.updateOne = (Model) =>
     res.status(200).json({
       status: "success",
       data: {
-        data: doc,
+        doc: doc,
       },
     });
   });
@@ -114,7 +114,7 @@ exports.updateOneForUserOnly = (Model) =>
     res.status(200).json({
       status: "success",
       data: {
-        data: doc,
+        doc: doc,
       },
     });
   });

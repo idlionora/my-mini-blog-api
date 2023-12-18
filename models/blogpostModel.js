@@ -14,6 +14,10 @@ const blogpostSchema = new mongoose.Schema(
       ],
       unique: true,
     },
+    summary: {
+      type: String,
+      trim: true,
+    },
     slug: { type: String, unique: true },
     blogpostImg: {
       type: String,
