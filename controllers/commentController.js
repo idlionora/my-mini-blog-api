@@ -13,8 +13,14 @@ exports.setSearchCommentsBlogpostId = (req, res, next) => {
   req.query.sort = "createdAt";
   next();
 };
-exports.getAllComments = factory.getAll(Comment);
 
-exports.getComment = factory.getOne(Comment);
+const commentPopOptions = [
+  {
+    path: "blogpost",
+    select: "title",
+  },
+];
+exports.getAllComments = factory.getAll(Comment, commentPopOptions);
+exports.getComment = factory.getOne(Comment, commentPopOptions);
 exports.updateComment = factory.updateOneForUserOnly(Comment);
 exports.deleteComment = factory.deleteOne(Comment);

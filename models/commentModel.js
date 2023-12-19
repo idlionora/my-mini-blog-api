@@ -26,10 +26,10 @@ const commentSchema = new mongoose.Schema(
 commentSchema.index({ blogpost: 1, createdAt: 1 });
 commentSchema.index({ user: 1 });
 
-commentSchema.pre(/^find/, function (next) {
-  this.populate({ path: "blogpost", select: "title" });
-  next();
-});
+// commentSchema.pre(/^find/, function (next) {
+//   this.populate({ path: "blogpost", select: "title" });
+//   next();
+// });
 
 commentSchema.pre(/^find/, function (next) {
   if (!this._conditions.user) {
