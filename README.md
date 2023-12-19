@@ -72,6 +72,7 @@ POST /api/v1/blogposts
 ```JSON
 {
   "title": "User's New Post, 4 Characters Minimum",
+  "summary": "This is short summary of this post.",
   "content": "Insert long sentences here, 26 characters at minimum.",
   "tags": ["personal", "funny", "daily-life"]
 }
@@ -83,6 +84,7 @@ POST /api/v1/blogposts
   "data": {
     "doc": {
       "title": "User's New Post, 4 Characters Minimum",
+      "summary": "This is short summary of this post.",  
       "blogpostImg": "/my-mini-blog/post_img/default.jpg",
       "blogthumbImg": "/my-mini-blog/thumb_img/default.jpg",
       "bannerImg": "/my-mini-blog/banner_img/default.jpg",
@@ -130,6 +132,7 @@ Get all active blogposts that had been created before. The response is sorted by
     {
       "_id": "657dc0cb998ee1e6ed20938c",
       "title": "User's New Post, 4 Characters Minimum",
+      "summary": "This is short summary of this post.", 
       "blogpostImg": "/my-mini-blog/post_img/default.jpg",
       "blogthumbImg": "/my-mini-blog/thumb_img/default.jpg",
       "bannerImg": "/my-mini-blog/banner_img/default.jpg",
@@ -187,6 +190,7 @@ Get all blogposts by filtering its owned tags. You can input multiple tags by in
   "data": [
     {
       "title": "User's New Post, 4 Characters Minimum",
+      "summary": "This is short summary of this post.", 
       "blogpostImg": "/my-mini-blog/post_img/default.jpg",
       "blogthumbImg": "/my-mini-blog/thumb_img/default.jpg",
       "bannerImg": "/my-mini-blog/banner_img/default.jpg",
@@ -196,7 +200,10 @@ Get all blogposts by filtering its owned tags. You can input multiple tags by in
       ],
       "createdAt": "2023-12-16T15:12:41.879Z",
       "updatedAt": "2023-12-16T15:12:41.879Z",
-      "user": "655f6a6feea8c6dc6f4f1227",
+      "user": {
+        "_id": "655f6a6feea8c6dc6f4f1227",
+        "name": "Rouge"
+      },
       "commentCount": 2,
       "slug": "users-new-post-4-characters-minimum",
       "id": "657dc0cb998ee1e6ed20938c"          
@@ -205,8 +212,78 @@ Get all blogposts by filtering its owned tags. You can input multiple tags by in
 }
 ```
 ## Get Blogpost
+
+```HTTP
+GET /api/v1/blogposts/:id
+```
+Call a single blogpost by its ID and get the requested document with all embedded comment section.  
+
+### Response
+```JSON
+{
+  "status": "success",
+  "results": 1,
+  "data": [
+    {
+      "title": "User's New Post, 4 Characters Minimum",
+      "summary": "This is short summary of this post.", 
+      "blogpostImg": "/my-mini-blog/post_img/default.jpg",
+      "blogthumbImg": "/my-mini-blog/thumb_img/default.jpg",
+      "bannerImg": "/my-mini-blog/banner_img/default.jpg",
+      "content": "Insert long sentences here, 26 characters at minimum.",
+      "tags": [
+                "personal",
+      ],
+      "createdAt": "2023-12-16T15:12:41.879Z",
+      "updatedAt": "2023-12-16T15:12:41.879Z",
+      "user": {
+                "_id": "655f6a6feea8c6dc6f4f1227",
+                "name": "Rouge",
+                "photo": "/v1702280414/my-mini-blog/user/profile-655f6a6feea8c6dc6f4f1227.jpg"
+            },
+      "commentCount": 2,
+      "slug": "users-new-post-4-characters-minimum",
+      "comments": [
+              {
+                "_id": "658162c0a6a75f34c636330d",
+                "comment": "Hello! First comment here. I hope you don't mind.",
+                "createdAt": "2023-12-19T09:15:54.930Z",
+                "updatedAt": "2023-12-19T09:15:54.930Z",
+                "blogpost": "6581608ea6a75f34c6363302",
+                "user": {
+                    "_id": "655c7a2bd2ffdd11ea492d1c",
+                    "name": "Barry T. Quokka",
+                    "photo": "/my-mini-blog/user/default.jpg"
+                },
+                "__v": 0,
+                "id": "658162c0a6a75f34c636330d"
+              },
+              {
+                "_id": "658162f1a6a75f34c6363313",
+                "comment": "Sure. Thanks for the test comment, Hun",
+                "createdAt": "2023-12-19T09:15:54.930Z",
+                "updatedAt": "2023-12-19T09:15:54.930Z",
+                "blogpost": "6581608ea6a75f34c6363302",
+                "user": {
+                    "_id": "655f6a6feea8c6dc6f4f1227",
+                    "name": "Rouge",
+                    "photo": "/v1702280414/my-mini-blog/user/profile-658162f1a6a75f34c6363313.jpg"
+                },
+                "__v": 0,
+                "id": "658162f1a6a75f34c6363313"
+              }
+            ],
+      "id": "657dc0cb998ee1e6ed20938c"          
+    }
+  ]
+}
+```
 ## Update Blogpost
 ## Delete Blogpost
+```HTTP
+DELETE /api/v1/blogposts/:id
+```
+🔒 Delete a blogpost and its comments by providing the blogpost's ID.
 
 ## Create New Comment
 ## Get All Comments
