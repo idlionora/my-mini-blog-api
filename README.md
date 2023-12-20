@@ -279,6 +279,52 @@ Call a single blogpost by its ID and get the requested document with all embedde
 }
 ```
 ## Update Blogpost
+
+```HTTP
+PATCH /api/v1/blogposts/:id
+```
+
+🔒 Edit user's blogpost including adding blogpostImg and bannerImg. blogpostImg will be used to post's representative picture in main page and thumbnail with size of ,  Only user who wrote the post and admins can perform this action.
+
+### multipart/ form-data
+| key | type | value |
+|:------|:-----|:------------|
+| title | Text | This is a New Title for an Editted Post |
+| summary | Text | Give this blogpost more compelling summary here. |
+| blogpostImg | File | insert image file in here. Post's image will be resized to have width of 600px and cropped to have height of 200px, thumbnail image will be resized and cropped to 250px x 200px |
+| bannerImg | File | insert image file in here, will be ressized to have width of 1920px and cropped to have height of 1080px |
+| content | text | This content has been editted, so it no longer has typo or such. |
+| tags | text | JSON.stringify(["array", "of-string"]) |
+
+### Response
+
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "_id": "6581608ea6a75f34c6363302",
+            "title": "This is a New Title for an Editted Post",
+            "summary": "Give this blogpost more compelling summary here.",
+            "blogpostImg": "/v1703114809/my-mini-blog/blogpost_img/blogpost-6581608ea6a75f34c6363302_2023-12-20-659.jpg",
+            "blogthumbImg": "/v1703114810/my-mini-blog/blogthumb_img/blogthumb-6581608ea6a75f34c6363302_2023-12-20-812.jpg",
+            "bannerImg": "/v1703114807/my-mini-blog/banner_img/banner-6581608ea6a75f34c6363302_2023-12-20-829.jpg",
+            "content": "This content has been editted, so it no longer has typo or such.",
+            "tags": [
+                "array",
+                "of-string"
+            ],
+            "createdAt": "2023-12-19T09:15:54.918Z",
+            "updatedAt": "2023-12-20T23:26:51.893Z",
+            "user": "655f6a6feea8c6dc6f4f1227",
+            "commentCount": 2,
+            "slug": "this-is-a-new-title-for-an-editted-post",
+            "__v": 1,
+            "id": "6581608ea6a75f34c6363302"
+        }
+    }
+}
+```
 ## Delete Blogpost
 ```HTTP
 DELETE /api/v1/blogposts/:id
