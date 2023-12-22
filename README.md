@@ -9,17 +9,17 @@ There is a rate limit of **100 requests per hour**, per IP address. If you excee
 - [Sign Up](#sign-up)
 - [Log In](#log-in)
 - [Forgot Password](#forgot-password)
-- [Reset Password](#reset-password)
-- [Update Current User Password](#update-current-user-password)
+- [Reset Password](#reset-password) 🔒
+- [Update Current User Password](#update-current-user-password) 🔒
 ### Users
-- [Get All Users](#get-all-users)
-- [Get Current User](#get-current-user)
+- [Get All Users](#get-all-users) 🎫
+- [Get Current User](#get-current-user) 🔒
 - [Get User](#get-user)
 - [Get Users by nameRegex](#get-users-by-name-regex)
-- [Update Current User](#update-current-user)
-- [Update User](#update-user)
-- [Delete Current User](#delete-current-user)
-- [Delete User](#delete-user)
+- [Update Current User](#update-current-user) 🔒
+- [Update User](#update-user) 🎫
+- [Delete Current User](#delete-current-user) 🔒
+- [Delete User](#delete-user) 🎫
 ### Blogposts
 - [Create New Blogpost](#create-new-blogpost) 🔒
 - [Get All Blogposts](#get-all-blogposts)
@@ -29,13 +29,13 @@ There is a rate limit of **100 requests per hour**, per IP address. If you excee
 - [Update Blogpost](#update-blogpost) 🔒
 - [Delete Blogpost](#delete-blogpost) 🔒
 ### Comments
-- [Create New Comment](#create-new-comment)
+- [Create New Comment](#create-new-comment) 🔒
 - [Get All Comments](#get-all-comments)
 - [Get Comment](#get-comment)
-- [Update Comment](#update-comment)
-- [Delete Comment](#delete-comment)
+- [Update Comment](#update-comment) 🔒
+- [Delete Comment](#delete-comment) 🔒
 ### Others
-- [Create New Comment by BlogpostId](#create-new-comment-by-blogpostid)
+- [Create New Comment by BlogpostId](#create-new-comment-by-blogpostid) 🔒
 - [Get All Comments by BlogpostId](#get-all-comments-by-blogpostid)
 - [Get Blogposts by UserId](#get-blogposts-by-userid)
 - [Get All Comments by UserId](#get-all-comments-by-userid)
