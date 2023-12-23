@@ -46,7 +46,74 @@ note on symbols:<br/>
 🎫 only admin can access this API endpoint.
 
 ## Sign Up
+
+```HTTP
+POST /api/v1/users/signup
+```
+Create a new account in myMiniBlog app. The account is identified by email so the field should be unique per account. Token is immediately saved when signing up is successful. You cannot assign user's role through this API endpoint.
+
+### Body
+```JSON
+{
+  "name": "Test Account",
+  "email": "testaccount2023@usermail.com",
+  "password": "test1234",
+  "passwordConfirm": "test1234"
+}
+```
+
+### Response
+```JSON
+{
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODc2MzZiM2FhYWU5NWM1OTBjZTdmZiIsImlhdCI6MTcwMzM3MTYyOCwiZXhwIjoxNzA1OTYzNjI4fQ.2jBETgPWzUCmL1rdFJ2AEnqsLHwkPkLk-Amq1zOGnHE",
+    "data": {
+        "user": {
+            "name": "Test Account",
+            "email": "testaccount2023@mailsac.com",
+            "photo": "/my-mini-blog/user/default.jpg",
+            "role": "user",
+            "active": true,
+            "_id": "6587636b3aaae95c590ce7ff",
+            "__v": 0
+        }
+    }
+}
+```
+
 ## Log In
+
+```HTTP
+POST /api/v1/users/login
+```
+Get token for registered user. The token will be saved in cookies and have expired date set in 24 hours after logging in.
+
+### Body
+```JSON
+{
+    "email": "testaccount2023@mailsac.com",
+    "password": "test1234"
+}
+```
+
+### Response
+```JSON
+{
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODc2MzZiM2FhYWU5NWM1OTBjZTdmZiIsImlhdCI6MTcwMzM3MjY1MywiZXhwIjoxNzA1OTY0NjUzfQ.8ET3_FX0EEwR-CWcSMxOyBEG3R6ozB6_Uasg0I7jpHw",
+    "data": {
+        "user": {
+            "_id": "6587636b3aaae95c590ce7ff",
+            "name": "Test Account",
+            "email": "testaccount2023@mailsac.com",
+            "photo": "/my-mini-blog/user/default.jpg",
+            "role": "user",
+            "__v": 0
+        }
+    }
+}
+```
+
 ## Forgot Password
 ## Reset Password
 ## Update Current User Password
