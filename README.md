@@ -9,7 +9,7 @@ There is a rate limit of **100 requests per hour**, per IP address. If you excee
 - [Sign Up](#sign-up)
 - [Log In](#log-in)
 - [Forgot Password](#forgot-password)
-- [Reset Password](#reset-password) 🔒
+- [Reset Password](#reset-password)
 - [Update Current User Password](#update-current-user-password) 🔒
 ### Users
 - [Get All Users](#get-all-users) 🎫
@@ -115,8 +115,91 @@ Get token for registered user. The token will be saved in cookies and have expir
 ```
 
 ## Forgot Password
+
+```HTTP
+POST /api/v1/users/login
+```
+Get an email containing token to reset password sent to the address provided. The token will immediately be sent and valid for 10 minutes after it was sent.
+
+### Body
+```JSON
+{
+    "email": "testaccount2023@mailsac.com",
+}
+```
+
+### Response
+```JSON
+{
+    "status": "success",
+    "message": "Token sent to email!"
+}
+```
+
 ## Reset Password
+```HTTP
+PATCH /api/v1/users/resetPassword/:token
+```
+Change user's password by the token sent in email after accessing Forgot Password API endpoint.
+
+### Body
+```JSON
+{
+    "password": "pass1234",
+    "passwordConfirm": "pass1234"
+}
+```
+
+### Response
+```JSON
+{
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODc2MzZiM2FhYWU5NWM1OTBjZTdmZiIsImlhdCI6MTcwMzQ1Nzc2NSwiZXhwIjoxNzA2MDQ5NzY1fQ.DvKmslyiBVm_JF-SFAmFrJGU-sKYiQVFAJY7C38x58k",
+    "data": {
+        "user": {
+            "_id": "6587636b3aaae95c590ce7ff",
+            "name": "Test Account",
+            "email": "testaccount2023@mailsac.com",
+            "photo": "/my-mini-blog/user/default.jpg",
+            "role": "user",
+            "__v": 0,
+            "passwordChangedAt": "2023-12-24T22:42:44.389Z"
+        }
+    }
+}
+```
 ## Update Current User Password
+```HTTP
+PATCH /api/v1/users/resetPassword/:token
+```
+Change user's password from myMiniBlog's account menu. The user needs to type in old password to change it. 
+
+### Body
+```JSON
+{
+    "passwordCurrent": "pass1234",
+    "password": "newpassword",
+    "passwordConfirm": "newpassword"
+}
+```
+### Response
+```JSON
+{
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODc2MzZiM2FhYWU5NWM1OTBjZTdmZiIsImlhdCI6MTcwMzQ1ODU4MSwiZXhwIjoxNzA2MDUwNTgxfQ.vJsz4NuUVo754zaTRsmBhAjA_QFlUjPF789YpX7h3QI",
+    "data": {
+        "user": {
+            "_id": "6587636b3aaae95c590ce7ff",
+            "name": "Test Account",
+            "email": "testaccount2023@mailsac.com",
+            "photo": "/my-mini-blog/user/default.jpg",
+            "role": "user",
+            "__v": 0,
+            "passwordChangedAt": "2023-12-24T22:56:20.224Z"
+        }
+    }
+}
+```
 
 ## Get All Users
 ## Get Current User
