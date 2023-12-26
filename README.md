@@ -52,7 +52,7 @@ POST /api/v1/users/signup
 ```
 Create a new account in myMiniBlog app. The account is identified by email so the field should be unique per account. Token is immediately saved when signing up is successful. You cannot assign user's role through this API endpoint.
 
-### Body
+**Body**
 ```JSON
 {
   "name": "Test Account",
@@ -62,7 +62,7 @@ Create a new account in myMiniBlog app. The account is identified by email so th
 }
 ```
 
-### Response
+**Response**
 ```JSON
 {
     "status": "success",
@@ -88,7 +88,7 @@ POST /api/v1/users/login
 ```
 Get token for registered user. The token will be saved in cookies and have expired date set in 24 hours after logging in.
 
-### Body
+**Body**
 ```JSON
 {
     "email": "testaccount2023@mailsac.com",
@@ -96,7 +96,7 @@ Get token for registered user. The token will be saved in cookies and have expir
 }
 ```
 
-### Response
+**Response**
 ```JSON
 {
     "status": "success",
@@ -121,14 +121,14 @@ POST /api/v1/users/login
 ```
 Get an email containing token to reset password sent to the address provided. The token will immediately be sent and valid for 10 minutes after it was sent.
 
-### Body
+**Body**
 ```JSON
 {
     "email": "testaccount2023@mailsac.com",
 }
 ```
 
-### Response
+**Response**
 ```JSON
 {
     "status": "success",
@@ -142,7 +142,7 @@ PATCH /api/v1/users/resetPassword/:token
 ```
 Change user's password by the token sent in email after accessing Forgot Password API endpoint.
 
-### Body
+**Body**
 ```JSON
 {
     "password": "pass1234",
@@ -150,7 +150,7 @@ Change user's password by the token sent in email after accessing Forgot Passwor
 }
 ```
 
-### Response
+**Response**
 ```JSON
 {
     "status": "success",
@@ -172,9 +172,9 @@ Change user's password by the token sent in email after accessing Forgot Passwor
 ```HTTP
 PATCH /api/v1/users/resetPassword/:token
 ```
-Change user's password from myMiniBlog's account menu. The user needs to type in old password to change it. 
+🔒 Change user's password from myMiniBlog's account menu. The user needs to type in old password to change it. 
 
-### Body
+**Body**
 ```JSON
 {
     "passwordCurrent": "pass1234",
@@ -182,7 +182,7 @@ Change user's password from myMiniBlog's account menu. The user needs to type in
     "passwordConfirm": "newpassword"
 }
 ```
-### Response
+**Response**
 ```JSON
 {
     "status": "success",
@@ -202,7 +202,62 @@ Change user's password from myMiniBlog's account menu. The user needs to type in
 ```
 
 ## Get All Users
+
+```HTTP
+GET /api/v1/users/
+```
+🎫 Get all registered users that has not been deactivated. This API endpoint can only be accessed by admins. 
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "results": 2,
+    "data": [
+        {
+            "_id": "6561dfed2e9013c758a7e675",
+            "name": "Fleetways",
+            "email": "fleetways@mailsac.com",
+            "photo": "/v1702280414/my-mini-blog/user/profile-6561dfed2e9013c758a7e675.jpg",
+            "role": "admin"
+        },
+        {
+            "_id": "6587636b3aaae95c590ce7ff",
+            "name": "Test Account",
+            "email": "testaccount2023@mailsac.com",
+            "photo": "/my-mini-blog/user/default.jpg",
+            "role": "user",
+            "passwordChangedAt": "2023-12-24T22:56:20.224Z"
+        }
+    ]
+}
+```
+
 ## Get Current User
+
+```HTTP
+GET /api/v1/users/me
+```
+🔒 Get informations of the current logged in user. JWT token is needed in order to search for user.
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "_id": "6587636b3aaae95c590ce7ff",
+            "name": "Test Account",
+            "email": "testaccount2023@mailsac.com",
+            "photo": "/my-mini-blog/user/default.jpg",
+            "role": "user",
+            "__v": 0,
+            "passwordChangedAt": "2023-12-24T22:56:20.224Z"
+        }
+    }
+}
+```
+
 ## Get User
 ## Get Users by nameRegex
 ## Update Current User
@@ -218,7 +273,7 @@ POST /api/v1/blogposts
 
 🔒 Create a new blogpost by providing title and content at minimum. You can also add tags to your post before updating blogpost for image inclusion.
 
-### Body
+**Body**
 ```JSON
 {
   "title": "User's New Post, 4 Characters Minimum",
@@ -227,7 +282,7 @@ POST /api/v1/blogposts
   "tags": ["personal", "funny", "daily-life"]
 }
 ```
-### Response
+**Response**
 ```JSON
 {
   "status": "success",
@@ -261,7 +316,7 @@ GET /api/v1/blogposts
 
 Get all active blogposts that had been created before. The response is sorted by blogpost's createdAt from new to old.
 
-### Query Parameters
+**Query Parameters**
 | param | type | description |
 |:------|:-----|:------------|
 |fields |`String`|Restrict the fields returned when requesting blogposts. Example to exclude more than one field is divided by coma: "-slug,-thumbnail,-banner,-__v"
@@ -272,8 +327,9 @@ Get all active blogposts that had been created before. The response is sorted by
 |limit|`Number`|How many blogposts that can be included in a single page. The default number of limit is 100 blogposts per page|
 |page|`Number`|Requested page number deducted from limit param and how many blogposts are found|
 
+<br/>
 
-### Response
+**Response**
 ```JSON
 {
   "status" : "success",
@@ -311,7 +367,7 @@ GET /api/v1/blogposts/alltags
 ```
 Get all tags that had been used in myMiniBlog before. 
 
-### Response
+**Response**
 ```JSON
 {
   "status" : "success",
@@ -332,7 +388,7 @@ GET /api/v1/blogposts/tags/:tag
 ```
 Get all blogposts by filtering its owned tags. You can input multiple tags by inserting the parameters divided by comma. Query filter works the same way as [Get All Blogposts](#get-all-blogposts) API endpoint. The response returned is also in the same format as Get All Blogposts' response.
 
-### Response
+**Response**
 ```JSON
 {
   "status": "success",
@@ -368,7 +424,7 @@ GET /api/v1/blogposts/:id
 ```
 Call a single blogpost by its ID and get the requested document with all embedded comment section.  
 
-### Response
+**Response**
 ```JSON
 {
   "status": "success",
@@ -436,7 +492,7 @@ PATCH /api/v1/blogposts/:id
 
 🔒 Edit user's blogpost including adding blogpostImg and bannerImg. blogpostImg will be used to post's representative picture in main page and thumbnail with size of ,  Only user who wrote the post and admins can perform this action.
 
-### multipart/ form-data
+**multipart/ form-data**
 | key | type | value |
 |:------|:-----|:------------|
 | title | Text | This is a New Title for an Editted Post |
@@ -446,7 +502,9 @@ PATCH /api/v1/blogposts/:id
 | content | text | This content has been editted, so it no longer has typo or such. |
 | tags | text | JSON.stringify(["array", "of-string"]) |
 
-### Response
+<br/>
+
+**Response**
 
 ```JSON
 {
