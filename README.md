@@ -259,11 +259,61 @@ GET /api/v1/users/me
 ```
 
 ## Get User
+```HTTP
+GET /api/v1/users/:id
+```
+Get user's data by providing user's ID param in API endpoint.
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "_id": "6587636b3aaae95c590ce7ff",
+            "name": "Test Account",
+            "email": "testaccount2023@mailsac.com",
+            "photo": "/my-mini-blog/user/default.jpg",
+            "role": "user",
+            "__v": 0,
+            "passwordChangedAt": "2023-12-24T22:56:20.224Z"
+        }
+    }
+}
+```
+
 ## Get Users by nameRegex
+```HTTP
+GET /api/v1/users/search/:nameRegex
+```
+Get users' data which user's name is matching the regex keyword provided. The name search is case insensitive and the result will provide id and name fields.
+
+**Response for /api/v1/users/search/b**
+```HTTP
+{
+    "status": "success",
+    "results": 2,
+    "data": [
+        {
+            "_id": "655c7a2bd2ffdd11ea492d1c",
+            "name": "Barry T. Quokka"
+        },
+        {
+            "_id": "655c7db100dd54c3bb607cd7",
+            "name": "Blaze"
+        }
+    ]
+}
+```
+
 ## Update Current User
+🔒
 ## Update User
+🎫
 ## Delete Current User
+🔒
 ## Delete User
+🎫
 
 ## Create New Blogpost 
 
