@@ -307,7 +307,35 @@ Get users' data which user's name is matching the regex keyword provided. The na
 ```
 
 ## Update Current User
-🔒
+```HTTP
+PATCH /api/v1/users/updateMe
+```
+🔒 Change the current logged in user's name, email, and/or photo. You cannot change user's password or role through this API endpoint. 
+
+**multipart/ form-data**
+| key | type | value |
+|:------|:-----|:------------|
+| name | Text | Guest Account |
+| email | Text | guestacc23@mailsac.com |
+| photo | File | insert image file here |
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "user": {
+            "_id": "6587636b3aaae95c590ce7ff",
+            "name": "Guest",
+            "email": "guestacc23@mailsac.com",
+            "photo": "/v1703860117/my-mini-blog/user/profile-6587636b3aaae95c590ce7ff.jpg",
+            "role": "user",
+            "__v": 0,
+            "passwordChangedAt": "2023-12-24T22:56:20.224Z"
+        }
+    }
+}
+```
 ## Update User
 🎫
 ## Delete Current User
@@ -555,7 +583,6 @@ PATCH /api/v1/blogposts/:id
 <br/>
 
 **Response**
-
 ```JSON
 {
     "status": "success",
