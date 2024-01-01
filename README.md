@@ -337,7 +337,39 @@ PATCH /api/v1/users/updateMe
 }
 ```
 ## Update User
-🎫
+```HTTP
+PATCH /api/v1/users/:id
+```
+🎫 Update user by provided ID, cannot upload image and change password through this API endpoint. Access for admins only.
+
+**Body**
+```JSON
+{
+    "name": "Test Account",
+    "email": "testaccount2023@mailsac.com",
+    "photo": "/my-mini-blog/user/default.jpg",
+    "role": "admin",
+    "active": false
+}
+```
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "_id": "6587636b3aaae95c590ce7ff",
+            "name": "Test Account",
+            "email": "testaccount2023@mailsac.com",
+            "photo": "/my-mini-blog/user/default.jpg",
+            "role": "admin",
+            "__v": 0,
+            "passwordChangedAt": "2023-12-24T22:56:20.224Z"
+        }
+    }
+}
+```
 ## Delete Current User
 🔒
 ## Delete User
