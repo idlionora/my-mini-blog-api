@@ -370,17 +370,24 @@ PATCH /api/v1/users/:id
     }
 }
 ```
+
 ## Delete Current User
-🔒
+```HTTP
+DELETE /api/v1/users/deleteMe
+```
+🔒 Set active: false for the current logged in user and hide data from showing in API responses.
+
 ## Delete User
-🎫
+```HTTP
+DELETE /api/v1/users/:id
+```
+🎫 Remove user data permanently from mongoDB. Only admins can do this action. 
 
 ## Create New Blogpost 
 
 ```HTTP
 POST /api/v1/blogposts
 ```
-
 🔒 Create a new blogpost by providing title and content at minimum. You can also add tags to your post before updating blogpost for image inclusion.
 
 **Body**
