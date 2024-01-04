@@ -75,7 +75,6 @@ Create a new account in myMiniBlog app. The account is identified by email so th
             "role": "user",
             "active": true,
             "_id": "6587636b3aaae95c590ce7ff",
-            "__v": 0
         }
     }
 }
@@ -108,7 +107,6 @@ Get token for registered user. The token will be saved in cookies and have expir
             "email": "testaccount2023@mailsac.com",
             "photo": "/my-mini-blog/user/default.jpg",
             "role": "user",
-            "__v": 0
         }
     }
 }
@@ -162,7 +160,6 @@ Change user's password by the token sent in email after accessing Forgot Passwor
             "email": "testaccount2023@mailsac.com",
             "photo": "/my-mini-blog/user/default.jpg",
             "role": "user",
-            "__v": 0,
             "passwordChangedAt": "2023-12-24T22:42:44.389Z"
         }
     }
@@ -194,7 +191,6 @@ PATCH /api/v1/users/resetPassword/:token
             "email": "testaccount2023@mailsac.com",
             "photo": "/my-mini-blog/user/default.jpg",
             "role": "user",
-            "__v": 0,
             "passwordChangedAt": "2023-12-24T22:56:20.224Z"
         }
     }
@@ -251,7 +247,6 @@ GET /api/v1/users/me
             "email": "testaccount2023@mailsac.com",
             "photo": "/my-mini-blog/user/default.jpg",
             "role": "user",
-            "__v": 0,
             "passwordChangedAt": "2023-12-24T22:56:20.224Z"
         }
     }
@@ -275,7 +270,6 @@ Get user's data by providing user's ID param in API endpoint.
             "email": "testaccount2023@mailsac.com",
             "photo": "/my-mini-blog/user/default.jpg",
             "role": "user",
-            "__v": 0,
             "passwordChangedAt": "2023-12-24T22:56:20.224Z"
         }
     }
@@ -330,7 +324,6 @@ PATCH /api/v1/users/updateMe
             "email": "guestacc23@mailsac.com",
             "photo": "/v1703860117/my-mini-blog/user/profile-6587636b3aaae95c590ce7ff.jpg",
             "role": "user",
-            "__v": 0,
             "passwordChangedAt": "2023-12-24T22:56:20.224Z"
         }
     }
@@ -364,7 +357,6 @@ PATCH /api/v1/users/:id
             "email": "testaccount2023@mailsac.com",
             "photo": "/my-mini-blog/user/default.jpg",
             "role": "admin",
-            "__v": 0,
             "passwordChangedAt": "2023-12-24T22:56:20.224Z"
         }
     }
@@ -578,7 +570,6 @@ Call a single blogpost by its ID and get the requested document with all embedde
                     "name": "Barry T. Quokka",
                     "photo": "/my-mini-blog/user/default.jpg"
                 },
-                "__v": 0,
                 "id": "658162c0a6a75f34c636330d"
               },
               {
@@ -592,7 +583,6 @@ Call a single blogpost by its ID and get the requested document with all embedde
                     "name": "Rouge",
                     "photo": "/v1702280414/my-mini-blog/user/profile-658162f1a6a75f34c6363313.jpg"
                 },
-                "__v": 0,
                 "id": "658162f1a6a75f34c6363313"
               }
             ],
@@ -643,7 +633,6 @@ PATCH /api/v1/blogposts/:id
             "user": "655f6a6feea8c6dc6f4f1227",
             "commentCount": 2,
             "slug": "this-is-a-new-title-for-an-editted-post",
-            "__v": 1,
             "id": "6581608ea6a75f34c6363302"
         }
     }
@@ -656,8 +645,114 @@ DELETE /api/v1/blogposts/:id
 🔒 Delete a blogpost and its comments by providing the blogpost's ID.
 
 ## Create New Comment
+```HTTP
+POST /api/v1/comments/
+```
+🔒 Create new comment by posting string of comment and blogpost's ID. User's ID is derived from the current logged in user's JWT token.
+
+**Body**
+```JSON
+{
+    "comment": "Posting comment here. Is it working?",
+    "blogpost": "6596c872c880de6594f068fa"
+}
+```
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "comment": "Posting comment here. Is it working?",
+            "createdAt": "2024-01-04T14:53:38.903Z",
+            "updatedAt": "2024-01-04T14:53:38.903Z",
+            "blogpost": "6596c872c880de6594f068fa",
+            "user": "6587636b3aaae95c590ce7ff",
+            "_id": "6596c8bbc880de6594f068fd",
+            "id": "6596c8bbc880de6594f068fd"
+        }
+    }
+}
+```
 ## Get All Comments
+```HTTP
+GET /api/v1/comments/
+```
+Get all posted comments from all the blogposts and users, sorted from oldest to newest by default. 
+
+**Query Parameters**
+| param | type | description |
+|:------|:-----|:------------|
+|createdAt[gte]|`String`|Get comments that are created in or after the date mentioned. Date input is a string in format of "YYYY-MM-DD"|
+|createdAt[lte]|`String`|Get comments that are created in or before the date mentioned. Can be included alongside of `createdAt[gte]` param|
+|createdAt|`String`|Get comments in a range date by format of "YYYY-MM-DD,YYYY-MM-DD". Only select blogposts created in 24 hours if there's only one date present. API will return an error if `createdAt[gte]` or `createdAt[lte]` is also included|
+|blogpost|`String`|Search comments that had been writen for blogpostId|
+|user|`String`|Search comments that had been writen by userId|
+|limit|`Number`|How many blogposts that can be included in a single page. The default number of limit is 100 comments per page|
+|page|`Number`|Requested page number deducted from limit param and how many comments are found|
+
+<br/>
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "results": 1,
+    "data": [
+        {
+            "_id": "6596c8bbc880de6594f068fd",
+            "comment": "Posting comment here. Is it working?",
+            "createdAt": "2024-01-04T14:53:38.903Z",
+            "updatedAt": "2024-01-04T14:53:38.903Z",
+            "blogpost": {
+                "_id": "6596c872c880de6594f068fa",
+                "title": "This is Test Account's Post",
+                "id": "6596c872c880de6594f068fa"
+            },
+            "user": {
+                "_id": "6587636b3aaae95c590ce7ff",
+                "name": "Test Account",
+                "photo": "/my-mini-blog/user/default.jpg"
+            },
+            "id": "6596c8bbc880de6594f068fd"
+        }
+    ]
+}
+```
+
 ## Get Comment
+```HTTP
+GET /api/v1/comments/:id
+```
+Call a single comment by its ID and get the requested document with blogpost title it posted to and the user who had written it.  
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "_id": "6596c8bbc880de6594f068fd",
+            "comment": "Posting comment here. Is it working?",
+            "createdAt": "2024-01-04T14:53:38.903Z",
+            "updatedAt": "2024-01-04T14:53:38.903Z",
+            "blogpost": {
+                "_id": "6596c872c880de6594f068fa",
+                "title": "This is Test Account's Post",
+                "id": "6596c872c880de6594f068fa"
+            },
+            "user": {
+                "_id": "6587636b3aaae95c590ce7ff",
+                "name": "Test Account",
+                "photo": "/my-mini-blog/user/default.jpg"
+            },
+            "id": "6596c8bbc880de6594f068fd"
+        }
+    }
+}
+```
+
 ## Update Comment
 ## Delete Comment
 
