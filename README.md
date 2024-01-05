@@ -754,7 +754,12 @@ Call a single comment by its ID and get the requested document with blogpost tit
 ```
 
 ## Update Comment
+
 ## Delete Comment
+```HTTP
+DELETE /api/v1/comments/:id
+```
+🔒 Delete a comment by its ID. Deleting a comment will automatically update commentsNum for the associated blogpost. Note: this endpoint can be accessed by every user logged in and not secured for only the user making comment.
 
 ## Create New Comment by BlogpostId
 ## Get All Comments by BlogpostsId
