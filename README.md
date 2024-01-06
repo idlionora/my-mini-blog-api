@@ -754,6 +754,36 @@ Call a single comment by its ID and get the requested document with blogpost tit
 ```
 
 ## Update Comment
+```HTTP
+PATCH /api/v1/comments/:id
+```
+🔒 Save new data for comment with ID provided in endpoint. Only user who wrote the comment and admins can update. The `user` field will persist unless an admin decided to input new ID. `updatedAt` field will be marked by `Date.now()`.
+
+**Body**
+```JSON
+{
+  "comment": "This comment is updated by admin. Thank you for participating.",
+  "user": "655c7db100dd54c3bb607cd7"
+}
+```
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "_id": "6596c8bbc880de6594f068fd",
+            "comment": "This comment is updated by admin. Thank you for participating.",
+            "createdAt": "2024-01-04T14:53:38.903Z",
+            "updatedAt": "2024-01-06T15:12:38.856Z",
+            "blogpost": "6596c872c880de6594f068fa",
+            "user": "655c7db100dd54c3bb607cd7",
+            "id": "6596c8bbc880de6594f068fd"
+        }
+    }
+}
+```
 
 ## Delete Comment
 ```HTTP
