@@ -792,6 +792,67 @@ DELETE /api/v1/comments/:id
 🔒 Delete a comment by its ID. Deleting a comment will automatically update commentsNum for the associated blogpost. Note: this endpoint can be accessed by every user logged in and not secured for only the user making comment.
 
 ## Create New Comment by BlogpostId
+```HTTP
+POST /api/v1/blogposts/:blogpostId/comments
+```
+🔒 Create new comment by inputing blogpost's ID in API endpoint. User's ID is derived from the current logged in user's JWT token.
+
+**Body**
+```JSON
+{
+    "comment": "Posting comment by blogpost's ID here :)",
+}
+```
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "comment": "Posting comment by blogpost's ID here :)",
+            "createdAt": "2024-01-09T13:55:31.978Z",
+            "updatedAt": "2024-01-09T13:55:31.978Z",
+            "blogpost": "6596c872c880de6594f068fa",
+            "user": "6587636b3aaae95c590ce7ff",
+            "_id": "659d51e5d3fa56a30b06897d",
+            "id": "659d51e5d3fa56a30b06897d"
+        }
+    }
+}
+```
 ## Get All Comments by BlogpostsId
+```HTTP
+GET /api/v1/blogposts/:blogpostId/comments
+```
+Get all posted comments from specified blogpost, sorted from oldest to newest by default. 
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "results": 1,
+    "data": [
+        {
+            "_id": "659d51e5d3fa56a30b06897d",
+            "comment": "Posting comment by blogpost's ID here.",
+            "createdAt": "2024-01-09T13:55:31.978Z",
+            "updatedAt": "2024-01-09T14:07:24.975Z",
+            "blogpost": {
+                "_id": "6596c872c880de6594f068fa",
+                "title": "This is Test Account's Post",
+                "id": "6596c872c880de6594f068fa"
+            },
+            "user": {
+                "_id": "6587636b3aaae95c590ce7ff",
+                "name": "Test Account",
+                "photo": "/my-mini-blog/user/default.jpg"
+            },
+            "id": "659d51e5d3fa56a30b06897d"
+        }
+    ]
+}
+```
+
 ## Get Blogposts by UserId
 ## Get All Comments by UserId
