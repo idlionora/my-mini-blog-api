@@ -135,7 +135,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   // const resetURL = `${req.protocol}://${req.get(
   //   "host",
   // )}/api/v1/users/resetPassword/${resetToken}`;
-  const resetURL = `https://myminiblog.idlionora.dev/user/change_password/${resetToken}`;
+  const resetURL = `https://myminiblog.idlionora.com/user/change_password/${resetToken}`;
   const message = `Forgot your password? Click the link below to set a new password within 10 minutes:\n${resetURL}\nIf you don't want to change your password, please ignore this email!`;
 
   try {
