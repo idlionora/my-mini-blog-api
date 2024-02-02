@@ -2,10 +2,12 @@ const express = require("express");
 const blogpostController = require("../controllers/blogpostController");
 const authController = require("../controllers/authController");
 const commentRouter = require("./commentRoutes");
+const tagRouter = require("./tagRoutes");
 
 const router = express.Router({ mergeParams: true });
 
 router.use("/:blogpostId/comments", commentRouter);
+router.use("/:blogpostId/tags", tagRouter);
 
 router
   .route("/")
@@ -15,14 +17,6 @@ router
     blogpostController.setCreateBlogpostUserId,
     blogpostController.createBlogpost,
   );
-
-router.get("/alltags", blogpostController.getAllTags);
-router.get("/tags", blogpostController.getAllBlogposts);
-router.get(
-  "/tags/:tag",
-  blogpostController.setSearchBlogpostsTags,
-  blogpostController.getAllBlogposts,
-);
 
 router
   .route("/:id")

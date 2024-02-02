@@ -14,10 +14,11 @@ const globalErrorHandler = require("./controllers/errorController");
 const userRouter = require("./routes/userRoutes");
 const blogpostRouter = require("./routes/blogpostRoutes");
 const commentRouter = require("./routes/commentRoutes");
+const tagRouter = require("./routes/tagRoutes");
 
 const app = express();
 
-app.enable("trust proxy");
+// app.enable("trust proxy");
 
 app.use(cors());
 app.options("*", cors());
@@ -47,6 +48,7 @@ app.use(compression());
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/blogposts", blogpostRouter);
 app.use("/api/v1/comments", commentRouter);
+app.use("/api/v1/tags", tagRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
