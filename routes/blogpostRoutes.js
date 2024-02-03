@@ -14,7 +14,11 @@ router
   .get(blogpostController.getAllBlogposts)
   .post(
     authController.protect,
+    blogpostController.uploadBlogpostImages,
     blogpostController.setCreateBlogpostUserId,
+    blogpostController.setImgUpdatesFalse,
+    blogpostController.uploadBannerImgToCloud,
+    blogpostController.uploadBlogpostImgToCloud,
     blogpostController.createBlogpost,
   );
 

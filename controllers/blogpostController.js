@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { uploadToMemory } = require("../utils/multerImage");
 const {
   uploadImgToCloudinary,
@@ -30,7 +31,7 @@ exports.uploadBannerImgToCloud = catchAsync(async (req, res, next) => {
   const bannerImgBuffer =
     await bannerImgSource.generateImgBufferPrioritizeWidth(outputSize);
 
-  const identifier = { flag: "banner", modelId: req.params.id };
+  const identifier = { flag: "banner", modelId: req.params.id || req.body._id };
   const bannerUploaded = await uploadImgToCloudinary(
     bannerImgBuffer,
     identifier,
@@ -50,7 +51,10 @@ exports.uploadBlogpostImgToCloud = catchAsync(async (req, res, next) => {
   const postImgBuffer =
     await imgSource.generateImgBufferPrioritizeWidth(postImgSize);
 
-  const postImgId = { flag: "blogpost", modelId: req.params.id };
+  const postImgId = {
+    flag: "blogpost",
+    modelId: req.params.id || req.body._id,
+  };
   const postImgUploaded = await uploadImgToCloudinary(postImgBuffer, postImgId);
   req.body.blogpostImg = getImgUrl(postImgUploaded);
 
@@ -69,6 +73,7 @@ exports.uploadBlogpostImgToCloud = catchAsync(async (req, res, next) => {
 
 exports.setCreateBlogpostUserId = (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id;
+  req.body._id = new mongoose.mongo.ObjectId();
   next();
 };
 exports.createBlogpost = factory.createOne(Blogpost);
