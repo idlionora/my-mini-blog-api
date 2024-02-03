@@ -1,6 +1,7 @@
 const express = require("express");
 const blogpostController = require("../controllers/blogpostController");
 const authController = require("../controllers/authController");
+const tagController = require("../controllers/tagController");
 const commentRouter = require("./commentRoutes");
 const tagRouter = require("./tagRoutes");
 
@@ -16,6 +17,7 @@ router
     authController.protect,
     blogpostController.uploadBlogpostImages,
     blogpostController.setCreateBlogpostUserId,
+    tagController.updateTagFromNewPost,
     blogpostController.setImgUpdatesFalse,
     blogpostController.uploadBannerImgToCloud,
     blogpostController.uploadBlogpostImgToCloud,
