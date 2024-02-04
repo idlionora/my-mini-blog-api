@@ -6,6 +6,7 @@ const {
 } = require("./blogpostControllerFunc");
 const ImgBufferGenerator = require("../utils/imgBufferGenerator");
 const Blogpost = require("../models/blogpostModel");
+const Tag = require("../models/tagModel");
 const Comment = require("../models/commentModel");
 const catchAsync = require("../utils/catchAsync");
 const factory = require("./handlerFactory");
@@ -121,8 +122,44 @@ const blogpostPopOptions = [
 exports.getBlogpost = factory.getOne(Blogpost, blogpostPopOptions);
 exports.updateBlogpost = factory.updateOneForUserOnly(Blogpost);
 
+exports.deleteBlogpostTags = catchAsync(async (req, res, next) => {
+  // Fetch documents which blogpost's id had listed
+  const selectedTags = await Tag.find({ blogposts: req.params.id });
+  const numOfTags = selectedTags.length;
+
+  // Separate which tags to delete and update
+  const tagsToDelete = [];
+  const tagsToUpdate = [];
+  for (let i = 0; i < numOfTags; i += 1) {
+    if (selectedTags[i].blogposts.length < 2) {
+      tagsToDelete.push(selectedTags[i]);
+    } else {
+      const spliceIndex = selectedTags[i].blogposts.indexOf(req.params.id);
+      selectedTags[i].blogposts.splice(spliceIndex, 1);
+      tagsToUpdate.push(selectedTags[i]);
+    }
+  }
+
+  // Prepare for bulkWrite (underscore symbol is important)
+  const bulkWriteArr = [];
+  tagsToDelete.forEach((tag) => {
+    bulkWriteArr.push({ deleteOne: { filter: { _id: tag._id } } });
+  });
+  tagsToUpdate.forEach((tag) => {
+    bulkWriteArr.push({
+      updateOne: {
+        filter: { _id: tag._id },
+        update: { $set: { blogposts: tag.blogposts } },
+      },
+    });
+  });
+  await Tag.bulkWrite(bulkWriteArr);
+  next();
+});
+
 exports.deleteBlogpostComments = catchAsync(async (req, res, next) => {
   await Comment.deleteMany({ blogpost: req.params.id });
   next();
 });
+
 exports.deleteBlogpost = factory.deleteOne(Blogpost);

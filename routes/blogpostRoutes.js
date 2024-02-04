@@ -17,10 +17,10 @@ router
     authController.protect,
     blogpostController.uploadBlogpostImages,
     blogpostController.setCreateBlogpostUserId,
-    tagController.updateTagFromNewPost,
     blogpostController.setImgUpdatesFalse,
     blogpostController.uploadBannerImgToCloud,
     blogpostController.uploadBlogpostImgToCloud,
+    tagController.updateTagsFromNewPost,
     blogpostController.createBlogpost,
   );
 
@@ -33,11 +33,13 @@ router
     blogpostController.setImgUpdatesFalse,
     blogpostController.uploadBannerImgToCloud,
     blogpostController.uploadBlogpostImgToCloud,
+    tagController.updateTagsFromEdittedPost,
     blogpostController.updateBlogpost,
   )
   .delete(
     authController.protect,
     blogpostController.deleteBlogpostComments,
+    blogpostController.deleteBlogpostTags,
     blogpostController.deleteBlogpost,
   );
 

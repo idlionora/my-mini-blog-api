@@ -8,9 +8,10 @@ const router = express.Router({ mergeParams: true });
  - getRandomRelatedPosts, /related-posts/:postNum, maybe I can just put it in client side
  - populate blogposts if search for related posts (summary=true)
  - middleware to aggregate tags and put it into getBlogpost x I did not think things through
- - middleware updateTagFromNewPost, updateTagFromEdittedPost
+ - delete cloudinary pictures when delete blogpost
 
  - add image to new post
+ - middleware updateTagFromNewPost, updateTagFromEdittedPost
 */
 
 router
