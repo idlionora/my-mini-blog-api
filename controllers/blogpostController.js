@@ -79,38 +79,7 @@ exports.setCreateBlogpostUserId = (req, res, next) => {
 };
 exports.createBlogpost = factory.createOne(Blogpost);
 
-// exports.getAllTags = catchAsync(async (req, res, next) => {
-//   const tags = await Blogpost.distinct("tags");
-
-//   res.status(200).json({
-//     status: "success",
-//     data: {
-//       tags,
-//     },
-//   });
-// });
-
-// exports.setSearchBlogpostsTags = (req, res, next) => {
-//   if (req.params.tag.includes(",")) {
-//     const tagsParam = req.params.tag
-//       .replace(/, /g, ",")
-//       .split(",")
-//       .filter((tagName) => tagName.length > 0);
-
-//     req.query.tags = { $all: tagsParam };
-//   } else {
-//     req.query.tags = req.params.tag;
-//   }
-//   next();
-// };
-
-const allBlogpostsPopOptions = [
-  {
-    path: "user",
-    select: "name",
-  },
-];
-exports.getAllBlogposts = factory.getAll(Blogpost, allBlogpostsPopOptions);
+exports.getAllBlogposts = factory.getAll(Blogpost);
 
 const blogpostPopOptions = [
   {
@@ -139,7 +108,6 @@ exports.deleteBlogpostTags = catchAsync(async (req, res, next) => {
       tagsToUpdate.push(selectedTags[i]);
     }
   }
-
   // Prepare for bulkWrite (underscore symbol is important)
   const bulkWriteArr = [];
   tagsToDelete.forEach((tag) => {

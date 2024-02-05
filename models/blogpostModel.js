@@ -88,6 +88,13 @@ blogpostSchema.pre("save", function (next) {
   next();
 });
 
+blogpostSchema.pre(/^find/, function (next) {
+  if (!this._mongooseOptions.populate) {
+    this.populate({ path: "user", select: "name" });
+  }
+  next();
+});
+
 async function tagCycleImg(doc, itemFlag) {
   if (doc[`${itemFlag}Img`] === `/my-mini-blog/${itemFlag}_img/default/jpg`) {
     return;
