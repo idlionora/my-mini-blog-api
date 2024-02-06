@@ -6,6 +6,8 @@ const APIFeatures = require("../utils/apiFeatures");
 
 exports.createTag = factory.createOne(Tag);
 
+/** UPDATING FROM BLOGPOST'S TAGS **/
+
 async function inputTagIntoDB(tag, blogpostId) {
   const selectedTag = await Tag.findOne({ tag });
 
@@ -99,6 +101,8 @@ exports.updateTagsFromEdittedPost = catchAsync(async (req, res, next) => {
   next();
 });
 
+/** TAG MODEL'S DIRECT CONTROLLER **/
+
 exports.setBlogpostIdSearch = (req, res, next) => {
   if (req.params.blogpostId) {
     req.query.blogposts = req.params.blogpostId;
@@ -107,46 +111,25 @@ exports.setBlogpostIdSearch = (req, res, next) => {
   next();
 };
 
-// function addOperatorToTags(tagQuery, operator) {
-//   console.log(`tagQuery ${operator}: `, tagQuery);
-//   if (tagQuery.includes(",")) {
-//     const tagsArr = tagQuery
-//       .replace(/, /g, ",")
-//       .split(",")
-//       .filter((tagName) => tagName.length > 0);
+exports.setSearchOperatorsToQuery = (req, res, next) => {
+  if (req.query.tag && req.query.tag.includes(",")) {
+    const tagsArr = req.query.tag
+      .replace(/, /g, ",")
+      .split(",")
+      .filter((tagName) => tagName.length > 0);
+    req.query.tag = { $in: tagsArr };
+  }
 
-//     let queryInsert;
+  if (req.query.blogposts && req.query.blogposts.includes(",")) {
+    const blogsArr = req.query.blogposts
+      .replace(/, /g, ",")
+      .split(",")
+      .filter((blogpostId) => blogpostId.length > 0);
+    req.query.blogposts = { $all: blogsArr };
+  }
 
-//     // { {operator}: tagsArr };
-//     // console.log("queryInsert1", queryInsert);
-//     // queryInsert = JSON.stringify(queryInsert).replace(
-//     //   operator,
-//     //   (match) => `$${match}`,
-//     // );
-//     // console.log("queryInsert2", queryInsert)
-//     // queryInsert = JSON.parse(queryInsert);
-
-//     return queryInsert;
-//   }
-//   return tagQuery;
-// }
-
-// exports.setTagQueryWithOperators = (req, res, next) => {
-//   // normal behavior is returning union search if multiple tags provided
-//   req.query.tag = addOperatorToTags(req.query.tag, "in");
-
-//   if (!req.query["tag[in]"] || !req.query["tag[all]"]) {
-//     return next();
-//   }
-
-//   // adding $in operator to get result for union search
-//   req.query.tag = addOperatorToTags(req.query["tag[in]"], "in");
-
-//   // adding $all operator to get result for slice search, override union search
-//   req.query.tag = addOperatorToTags(req.query["tag[all]"], "all");
-
-//   next();
-// };
+  next();
+};
 
 exports.getAllTags = catchAsync(async (req, res, next) => {
   const tagQuery = Tag.find();

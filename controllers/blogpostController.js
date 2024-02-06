@@ -77,7 +77,20 @@ exports.setCreateBlogpostUserId = (req, res, next) => {
   req.body._id = new mongoose.mongo.ObjectId();
   next();
 };
+
 exports.createBlogpost = factory.createOne(Blogpost);
+
+exports.setTagsQueryToSliceSearch = (req, res, next) => {
+  if (req.query.tags && req.query.tags.includes(",")) {
+    const tagsArr = req.query.tags
+      .replace(/, /g, ",")
+      .split(",")
+      .filter((tagName) => tagName.length > 0);
+    req.query.tags = { $all: tagsArr };
+  }
+
+  next();
+};
 
 exports.getAllBlogposts = factory.getAll(Blogpost);
 
@@ -129,5 +142,9 @@ exports.deleteBlogpostComments = catchAsync(async (req, res, next) => {
   await Comment.deleteMany({ blogpost: req.params.id });
   next();
 });
+
+// exports.deleteBlogpostImages = catchAsync(async (req, res, next) => {
+
+// });
 
 exports.deleteBlogpost = factory.deleteOne(Blogpost);

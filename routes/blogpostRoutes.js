@@ -12,7 +12,10 @@ router.use("/:blogpostId/tags", tagRouter);
 
 router
   .route("/")
-  .get(blogpostController.getAllBlogposts)
+  .get(
+    blogpostController.setTagsQueryToSliceSearch,
+    blogpostController.getAllBlogposts,
+  )
   .post(
     authController.protect,
     blogpostController.uploadBlogpostImages,
