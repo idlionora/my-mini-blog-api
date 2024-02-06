@@ -19,7 +19,8 @@ router
   .post(
     authController.protect,
     blogpostController.uploadBlogpostImages,
-    blogpostController.setCreateBlogpostUserId,
+    blogpostController.checkTitleSlug,
+    blogpostController.setIdsForNewPost,
     blogpostController.setImgUpdatesFalse,
     blogpostController.uploadBannerImgToCloud,
     blogpostController.uploadBlogpostImgToCloud,
@@ -33,6 +34,7 @@ router
   .patch(
     authController.protect,
     blogpostController.uploadBlogpostImages,
+    blogpostController.checkTitleSlug,
     blogpostController.setImgUpdatesFalse,
     blogpostController.uploadBannerImgToCloud,
     blogpostController.uploadBlogpostImgToCloud,

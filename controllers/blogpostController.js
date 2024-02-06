@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { default: slugify } = require("slugify");
 const { uploadToMemory } = require("../utils/multerImage");
 const {
   uploadImgToCloudinary,
@@ -16,6 +17,33 @@ exports.uploadBlogpostImages = uploadToMemory(maxSize).fields([
   { name: "bannerImg", maxCount: 1 },
   { name: "blogpostImg", maxCount: 1 },
 ]);
+
+exports.checkTitleSlug = catchAsync(async (req, res, next) => {
+  let skipImgAndTagUpdates = false;
+
+  if (!req.body.title) {
+    skipImgAndTagUpdates = true;
+  } else {
+    req.body.slug = slugify(req.body.title, { lower: true, strict: true });
+    const postWithSameSlug = await Blogpost.findOne({ slug: req.body.slug });
+
+    if (postWithSameSlug) skipImgAndTagUpdates = true;
+  }
+
+  if (skipImgAndTagUpdates) {
+    req.files = undefined;
+    req.body.tags = undefined;
+  }
+
+  next();
+});
+
+exports.setIdsForNewPost = (req, res, next) => {
+  if (!req.body.user) req.body.user = req.user.id;
+
+  req.body._id = new mongoose.mongo.ObjectId();
+  next();
+};
 
 exports.setImgUpdatesFalse = (req, res, next) => {
   req.body.blogpostImgUpdate = false;
@@ -62,7 +90,10 @@ exports.uploadBlogpostImgToCloud = catchAsync(async (req, res, next) => {
   const thumbImgSize = { width: 250, height: 200 };
   const thumbImgBuffer = await imgSource.getSharpBuffer(thumbImgSize, "cover");
 
-  const thumbImgId = { flag: "blogthumb", modelId: req.params.id };
+  const thumbImgId = {
+    flag: "blogthumb",
+    modelId: req.params.id || req.body._id,
+  };
   const thumbImgUploaded = await uploadImgToCloudinary(
     thumbImgBuffer,
     thumbImgId,
@@ -71,12 +102,6 @@ exports.uploadBlogpostImgToCloud = catchAsync(async (req, res, next) => {
 
   next();
 });
-
-exports.setCreateBlogpostUserId = (req, res, next) => {
-  if (!req.body.user) req.body.user = req.user.id;
-  req.body._id = new mongoose.mongo.ObjectId();
-  next();
-};
 
 exports.createBlogpost = factory.createOne(Blogpost);
 

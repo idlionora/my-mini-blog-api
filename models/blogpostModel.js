@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
-const slugify = require("slugify");
+// const slugify = require("slugify");
 
 const blogpostSchema = new mongoose.Schema(
   {
@@ -83,10 +83,10 @@ blogpostSchema.virtual("comments", {
   localField: "_id",
 });
 
-blogpostSchema.pre("save", function (next) {
-  this.slug = slugify(this.title, { lower: true, strict: true });
-  next();
-});
+// blogpostSchema.pre("save", function (next) {
+//   this.slug = slugify(this.title, { lower: true, strict: true });
+//   next();
+// });
 
 blogpostSchema.pre(/^find/, function (next) {
   if (!this._mongooseOptions.populate) {

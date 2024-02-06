@@ -70,6 +70,11 @@ exports.updateTagsFromEdittedPost = catchAsync(async (req, res, next) => {
   const prevBlogpost = await Blogpost.findById(req.params.id);
   const prevTags = prevBlogpost.tags || [];
 
+  // Tag query "NULL" will update previously saved tags to none
+  if (req.body.tags === "NULL") {
+    req.body.tags = [];
+  }
+
   req.body.tags = parseToTagArr(req.body.tags);
   const currentTags = [...req.body.tags];
 
