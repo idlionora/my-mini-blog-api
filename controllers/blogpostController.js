@@ -21,9 +21,9 @@ exports.uploadBlogpostImages = uploadToMemory(maxSize).fields([
 exports.checkTitleSlug = catchAsync(async (req, res, next) => {
   let skipImgAndTagUpdates = false;
 
-  if (!req.body.title) {
+  if (!req.params.id && !req.body.title) {
     skipImgAndTagUpdates = true;
-  } else {
+  } else if (req.body.title) {
     req.body.slug = slugify(req.body.title, { lower: true, strict: true });
     const postWithSameSlug = await Blogpost.findOne({ slug: req.body.slug });
 
@@ -99,7 +99,6 @@ exports.uploadBlogpostImgToCloud = catchAsync(async (req, res, next) => {
     thumbImgId,
   );
   req.body.blogthumbImg = getImgUrl(thumbImgUploaded);
-
   next();
 });
 
