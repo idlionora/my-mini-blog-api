@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { default: slugify } = require("slugify");
+const cloudinary = require("cloudinary").v2;
 const { uploadToMemory } = require("../utils/multerImage");
 const {
   uploadImgToCloudinary,
@@ -10,6 +11,7 @@ const Blogpost = require("../models/blogpostModel");
 const Tag = require("../models/tagModel");
 const Comment = require("../models/commentModel");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 const factory = require("./handlerFactory");
 
 const maxSize = 6 * 1000 * 1000;
@@ -167,8 +169,25 @@ exports.deleteBlogpostComments = catchAsync(async (req, res, next) => {
   next();
 });
 
-// exports.deleteBlogpostImages = catchAsync(async (req, res, next) => {
+exports.deleteBlogpost = catchAsync(async (req, res, next) => {
+  const postToDelete = await Blogpost.findById(req.params.id);
 
-// });
+  if (!postToDelete) {
+    return next(new AppError("No document found with that ID", 404));
+  }
 
-exports.deleteBlogpost = factory.deleteOne(Blogpost);
+  if (
+    !postToDelete.blogpostImg.includes("default") ||
+    !postToDelete.bannerImg.includes("default")
+  ) {
+    cloudinary.api.delete_resources_by_tag(req.params.id, {
+      invalidate: true,
+    });
+  }
+  await postToDelete.deleteOne();
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});

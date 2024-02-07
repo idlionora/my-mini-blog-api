@@ -111,18 +111,18 @@ async function tagCycleImg(doc, itemFlag) {
     .split("/");
   const cloudFilename = pathArray.slice(1).join("/");
 
-  cloudinary.uploader.add_tag(destroyTag, [cloudFilename]);
+  cloudinary.uploader.add_tag([destroyTag, doc.id], [cloudFilename]);
 }
 
 blogpostSchema.post("save", async function () {
-  if (!this.bannerImgUpdate) return;
-  tagCycleImg(this, "banner");
-});
+  if (!this.bannerImgUpdate && !this.blogpostImgUpdate) return;
+  let itemFlags = [];
 
-blogpostSchema.post("save", async function () {
-  if (!this.blogpostImgUpdate) return;
-  tagCycleImg(this, "blogpost");
-  tagCycleImg(this, "blogthumb");
+  if (this.blogpostImgUpdate) itemFlags = ["blogpost", "blogthumb"];
+  if (this.blogpostImgUpdate) itemFlags.push("banner");
+
+  itemFlags.map((flag) => tagCycleImg(this, flag));
+  Promise.all(itemFlags);
 });
 
 const Blogpost = mongoose.model("Blogpost", blogpostSchema);
