@@ -48,7 +48,7 @@ note on symbols:<br/>
 ## Sign Up
 
 ```HTTP
-POST /api/v1/users/signup
+POST /api/2/users/signup
 ```
 Create a new account in myMiniBlog app. The account is identified by email so the field should be unique per account. Token is immediately saved when signing up is successful. You cannot assign user's role through this API endpoint.
 
@@ -83,7 +83,7 @@ Create a new account in myMiniBlog app. The account is identified by email so th
 ## Log In
 
 ```HTTP
-POST /api/v1/users/login
+POST /api/v2/users/login
 ```
 Get token for registered user. The token will be saved in cookies and have expired date set in 24 hours after logging in.
 
@@ -115,7 +115,7 @@ Get token for registered user. The token will be saved in cookies and have expir
 ## Forgot Password
 
 ```HTTP
-POST /api/v1/users/login
+POST /api/v2/users/login
 ```
 Get an email containing token to reset password sent to the address provided. The token will immediately be sent and valid for 10 minutes after it was sent.
 
@@ -136,7 +136,7 @@ Get an email containing token to reset password sent to the address provided. Th
 
 ## Reset Password
 ```HTTP
-PATCH /api/v1/users/resetPassword/:token
+PATCH /api/v2/users/resetPassword/:token
 ```
 Change user's password by the token sent in email after accessing Forgot Password API endpoint.
 
@@ -167,7 +167,7 @@ Change user's password by the token sent in email after accessing Forgot Passwor
 ```
 ## Update Current User Password
 ```HTTP
-PATCH /api/v1/users/resetPassword/:token
+PATCH /api/v2/users/resetPassword/:token
 ```
 🔒 Change user's password from myMiniBlog's account menu. The user needs to type in old password to change it. 
 
@@ -202,7 +202,7 @@ PATCH /api/v1/users/resetPassword/:token
 ## Get All Users
 
 ```HTTP
-GET /api/v1/users/
+GET /api/v2/users/
 ```
 🎫 Get all registered users that has not been deactivated. This API endpoint can only be accessed by admins. 
 
@@ -234,7 +234,7 @@ GET /api/v1/users/
 ## Get Current User
 
 ```HTTP
-GET /api/v1/users/me
+GET /api/v2/users/me
 ```
 🔒 Get informations of the current logged in user. JWT token is needed in order to search for user.
 
@@ -257,7 +257,7 @@ GET /api/v1/users/me
 
 ## Get User
 ```HTTP
-GET /api/v1/users/:id
+GET /api/v2/users/:id
 ```
 Get user's data by providing user's ID param in API endpoint.
 
@@ -280,11 +280,11 @@ Get user's data by providing user's ID param in API endpoint.
 
 ## Get Users by nameRegex
 ```HTTP
-GET /api/v1/users/search/:nameRegex
+GET /api/v2/users/search/:nameRegex
 ```
 Get users' data which user's name is matching the regex keyword provided. The name search is case insensitive and the result will provide id and name fields.
 
-**Response for /api/v1/users/search/b**
+**Response for /api/v2/users/search/b**
 ```HTTP
 {
     "status": "success",
@@ -304,7 +304,7 @@ Get users' data which user's name is matching the regex keyword provided. The na
 
 ## Update Current User
 ```HTTP
-PATCH /api/v1/users/updateMe
+PATCH /api/v2/users/updateMe
 ```
 🔒 Change the current logged in user's name, email, and/or photo. You cannot change user's password or role through this API endpoint. 
 
@@ -333,7 +333,7 @@ PATCH /api/v1/users/updateMe
 ```
 ## Update User
 ```HTTP
-PATCH /api/v1/users/:id
+PATCH /api/v2/users/:id
 ```
 🎫 Update user by provided ID, cannot upload image and change password through this API endpoint. Access for admins only.
 
@@ -367,13 +367,13 @@ PATCH /api/v1/users/:id
 
 ## Delete Current User
 ```HTTP
-DELETE /api/v1/users/deleteMe
+DELETE /api/v2/users/deleteMe
 ```
 🔒 Set active: false for the current logged in user and hide data from showing in API responses.
 
 ## Delete User
 ```HTTP
-DELETE /api/v1/users/:id
+DELETE /api/v2/users/:id
 ```
 🎫 Remove user data permanently from mongoDB. Only admins can do this action. 
 
@@ -384,7 +384,7 @@ DELETE /api/v1/users/:id
 ## Create New Blogpost 
 
 ```HTTP
-POST /api/v1/blogposts
+POST /api/v2/blogposts
 ```
 🔒 Create a new blogpost by providing title and content at minimum. You can also add tags to your post before updating blogpost for image inclusion.
 
@@ -426,7 +426,7 @@ POST /api/v1/blogposts
 ## Get All Blogposts
 
 ```HTTP
-GET /api/v1/blogposts
+GET /api/v2/blogposts
 ```
 
 Get all active blogposts that had been created before. The response is sorted by blogpost's createdAt from new to old.
@@ -478,7 +478,7 @@ Get all active blogposts that had been created before. The response is sorted by
 ```
 ## Get All Tags
 ```HTTP
-GET /api/v1/blogposts/alltags
+GET /api/v2/blogposts/alltags
 ```
 Get all tags that had been used in myMiniBlog before. 
 
@@ -499,7 +499,7 @@ Get all tags that had been used in myMiniBlog before.
 ```
 ## Get Blogposts by Tags
 ```HTTP
-GET /api/v1/blogposts/tags/:tag
+GET /api/v2/blogposts/tags/:tag
 ```
 Get all blogposts by filtering its owned tags. You can input multiple tags by inserting the parameters divided by comma. Query filter works the same way as [Get All Blogposts](#get-all-blogposts) API endpoint. The response returned is also in the same format as Get All Blogposts' response.
 
@@ -535,7 +535,7 @@ Get all blogposts by filtering its owned tags. You can input multiple tags by in
 ## Get Blogpost
 
 ```HTTP
-GET /api/v1/blogposts/:id
+GET /api/v2/blogposts/:id
 ```
 Call a single blogpost by its ID and get the requested document with all embedded comment section.  
 
@@ -600,7 +600,7 @@ Call a single blogpost by its ID and get the requested document with all embedde
 ## Update Blogpost
 
 ```HTTP
-PATCH /api/v1/blogposts/:id
+PATCH /api/v2/blogposts/:id
 ```
 
 🔒 Edit user's blogpost including adding blogpostImg and bannerImg. blogpostImg will be used to post's representative picture in main page and thumbnail with size of ,  Only user who wrote the post and admins can perform this action.
@@ -646,7 +646,7 @@ PATCH /api/v1/blogposts/:id
 ```
 ## Delete Blogpost
 ```HTTP
-DELETE /api/v1/blogposts/:id
+DELETE /api/v2/blogposts/:id
 ```
 🔒 Delete a blogpost and its comments by providing the blogpost's ID.
 
@@ -657,7 +657,7 @@ DELETE /api/v1/blogposts/:id
 
 ## Create New Comment
 ```HTTP
-POST /api/v1/comments/
+POST /api/v2/comments/
 ```
 🔒 Create new comment by posting string of comment and blogpost's ID. User's ID is derived from the current logged in user's JWT token.
 
@@ -688,7 +688,7 @@ POST /api/v1/comments/
 ```
 ## Get All Comments
 ```HTTP
-GET /api/v1/comments/
+GET /api/v2/comments/
 ```
 Get all posted comments from all the blogposts and users, sorted from oldest to newest by default. 
 
@@ -734,7 +734,7 @@ Get all posted comments from all the blogposts and users, sorted from oldest to 
 
 ## Get Comment
 ```HTTP
-GET /api/v1/comments/:id
+GET /api/v2/comments/:id
 ```
 Call a single comment by its ID and get the requested document with blogpost title it posted to and the user who had written it.  
 
@@ -766,7 +766,7 @@ Call a single comment by its ID and get the requested document with blogpost tit
 
 ## Update Comment
 ```HTTP
-PATCH /api/v1/comments/:id
+PATCH /api/v2/comments/:id
 ```
 🔒 Save new data for comment with ID provided in endpoint. Only user who wrote the comment and admins can update. The `user` field will persist unless an admin decided to input new ID. `updatedAt` field will be marked by `Date.now()`.
 
@@ -798,7 +798,7 @@ PATCH /api/v1/comments/:id
 
 ## Delete Comment
 ```HTTP
-DELETE /api/v1/comments/:id
+DELETE /api/v2/comments/:id
 ```
 🔒 Delete a comment by its ID. Deleting a comment will automatically update commentsNum for the associated blogpost. Note: this endpoint can be accessed by every user logged in and not secured for only the user making comment.
 
@@ -810,7 +810,7 @@ DELETE /api/v1/comments/:id
 
 ## Create New Comment by BlogpostId
 ```HTTP
-POST /api/v1/blogposts/:blogpostId/comments
+POST /api/v2/blogposts/:blogpostId/comments
 ```
 🔒 Create new comment by inputing blogpost's ID in API endpoint. User's ID is derived from the current logged in user's JWT token.
 
@@ -840,7 +840,7 @@ POST /api/v1/blogposts/:blogpostId/comments
 ```
 ## Get All Comments by BlogpostId
 ```HTTP
-GET /api/v1/blogposts/:blogpostId/comments
+GET /api/v2/blogposts/:blogpostId/comments
 ```
 Get all posted comments from specified blogpost, sorted from oldest to newest by default. 
 
@@ -873,7 +873,7 @@ Get all posted comments from specified blogpost, sorted from oldest to newest by
 
 ## Get Blogposts by UserId
 ```HTTP
-GET /api/v1/users/:userId/blogposts
+GET /api/v2/users/:userId/blogposts
 ```
 Get all blogposts that had been posted by a user.
 
@@ -910,7 +910,7 @@ Get all blogposts that had been posted by a user.
 
 ## Get All Comments by UserId
 ```HTTP
-GET /api/v1/users/:userId/comments
+GET /api/v2/users/:userId/comments
 ```
 Get all comments that had been posted by a user.
 

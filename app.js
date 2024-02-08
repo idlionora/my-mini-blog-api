@@ -18,7 +18,7 @@ const tagRouter = require("./routes/tagRoutes");
 
 const app = express();
 
-// app.enable("trust proxy");
+app.enable("trust proxy");
 
 app.use(cors());
 app.options("*", cors());
@@ -45,10 +45,10 @@ app.use(hpp({ whitelist: ["user"] }));
 
 app.use(compression());
 
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/blogposts", blogpostRouter);
-app.use("/api/v1/comments", commentRouter);
-app.use("/api/v1/tags", tagRouter);
+app.use("/api/v2/users", userRouter);
+app.use("/api/v2/blogposts", blogpostRouter);
+app.use("/api/v2/comments", commentRouter);
+app.use("/api/v2/tags", tagRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
