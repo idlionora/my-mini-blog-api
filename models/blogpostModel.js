@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
-const slugify = require("slugify");
+// const slugify = require("slugify");
 
 const blogpostSchema = new mongoose.Schema(
   {
@@ -83,8 +83,15 @@ blogpostSchema.virtual("comments", {
   localField: "_id",
 });
 
-blogpostSchema.pre("save", function (next) {
-  this.slug = slugify(this.title, { lower: true, strict: true });
+// blogpostSchema.pre("save", function (next) {
+//   this.slug = slugify(this.title, { lower: true, strict: true });
+//   next();
+// });
+
+blogpostSchema.pre(/^find/, function (next) {
+  if (!this._mongooseOptions.populate) {
+    this.populate({ path: "user", select: "name" });
+  }
   next();
 });
 
@@ -104,18 +111,18 @@ async function tagCycleImg(doc, itemFlag) {
     .split("/");
   const cloudFilename = pathArray.slice(1).join("/");
 
-  cloudinary.uploader.add_tag(destroyTag, [cloudFilename]);
+  cloudinary.uploader.add_tag([destroyTag, doc.id], [cloudFilename]);
 }
 
 blogpostSchema.post("save", async function () {
-  if (!this.bannerImgUpdate) return;
-  tagCycleImg(this, "banner");
-});
+  if (!this.bannerImgUpdate && !this.blogpostImgUpdate) return;
+  let itemFlags = [];
 
-blogpostSchema.post("save", async function () {
-  if (!this.blogpostImgUpdate) return;
-  tagCycleImg(this, "blogpost");
-  tagCycleImg(this, "blogthumb");
+  if (this.blogpostImgUpdate) itemFlags = ["blogpost", "blogthumb"];
+  if (this.blogpostImgUpdate) itemFlags.push("banner");
+
+  itemFlags.map((flag) => tagCycleImg(this, flag));
+  Promise.all(itemFlags);
 });
 
 const Blogpost = mongoose.model("Blogpost", blogpostSchema);

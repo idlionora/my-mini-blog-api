@@ -14,6 +14,7 @@ const globalErrorHandler = require("./controllers/errorController");
 const userRouter = require("./routes/userRoutes");
 const blogpostRouter = require("./routes/blogpostRoutes");
 const commentRouter = require("./routes/commentRoutes");
+const tagRouter = require("./routes/tagRoutes");
 
 const app = express();
 
@@ -44,9 +45,10 @@ app.use(hpp({ whitelist: ["user"] }));
 
 app.use(compression());
 
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/blogposts", blogpostRouter);
-app.use("/api/v1/comments", commentRouter);
+app.use("/api/v2/users", userRouter);
+app.use("/api/v2/blogposts", blogpostRouter);
+app.use("/api/v2/comments", commentRouter);
+app.use("/api/v2/tags", tagRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
