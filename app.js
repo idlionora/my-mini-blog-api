@@ -46,7 +46,9 @@ app.use(hpp({ whitelist: ["user"] }));
 app.use(compression());
 
 app.get("/", (req, res) => {
-  res.send("Express JS on Vercel");
+  res.send(
+    "Welcome to myMiniBlog's API! This is an Express.js app on render.com",
+  );
 });
 app.use("/api/v2/users", userRouter);
 app.use("/api/v2/blogposts", blogpostRouter);
