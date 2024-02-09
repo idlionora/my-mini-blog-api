@@ -45,6 +45,9 @@ app.use(hpp({ whitelist: ["user"] }));
 
 app.use(compression());
 
+app.get("/", (req, res) => {
+  res.send("Express JS on Vercel");
+});
 app.use("/api/v2/users", userRouter);
 app.use("/api/v2/blogposts", blogpostRouter);
 app.use("/api/v2/comments", commentRouter);

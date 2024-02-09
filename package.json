@@ -1,6 +1,6 @@
 {
   "name": "my-mini-blog-api",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "express.js app for my-mini-blog hosted in netlify",
   "main": "server.js",
   "scripts": {
