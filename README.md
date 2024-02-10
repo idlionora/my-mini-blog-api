@@ -23,11 +23,15 @@ There is a rate limit of **100 requests per hour**, per IP address. If you excee
 ### Blogposts
 - [Create New Blogpost](#create-new-blogpost) 🔒
 - [Get All Blogposts](#get-all-blogposts)
-- [Get All Tags](#get-all-tags)
-- [Get Blogposts by Tags](#get-blogposts-by-tags)
 - [Get Blogpost](#get-blogpost)
 - [Update Blogpost](#update-blogpost) 🔒
 - [Delete Blogpost](#delete-blogpost) 🔒
+### Tags
+- [Create New Tag] 🎫
+- [Get All Tags]
+- [Get Tag]
+- [Update Tag] 🎫
+- [Delete Tag] 🎫
 ### Comments
 - [Create New Comment](#create-new-comment) 🔒
 - [Get All Comments](#get-all-comments)
@@ -37,6 +41,7 @@ There is a rate limit of **100 requests per hour**, per IP address. If you excee
 ### Others
 - [Create New Comment by BlogpostId](#create-new-comment-by-blogpostid) 🔒
 - [Get All Comments by BlogpostId](#get-all-comments-by-blogpostid)
+- [Get All Tags by BlogpostId]
 - [Get Blogposts by UserId](#get-blogposts-by-userid)
 - [Get All Comments by UserId](#get-all-comments-by-userid)
 
@@ -48,7 +53,7 @@ note on symbols:<br/>
 ## Sign Up
 
 ```HTTP
-POST /api/2/users/signup
+POST /api/v2/users/signup
 ```
 Create a new account in myMiniBlog app. The account is identified by email so the field should be unique per account. Token is immediately saved when signing up is successful. You cannot assign user's role through this API endpoint.
 
@@ -386,7 +391,7 @@ DELETE /api/v2/users/:id
 ```HTTP
 POST /api/v2/blogposts
 ```
-🔒 Create a new blogpost by providing title and content at minimum. You can also add tags to your post before updating blogpost for image inclusion.
+🔒 Create a new blogpost by providing title and content at the minimum. You can also add tags and summary to your post. Image representations can also be provided by uploading blogpostImg and bannerImg as form-data files. (See [Update Blogpost](#update-blogpost) for form-data example)
 
 **Body**
 ```JSON
@@ -439,6 +444,7 @@ Get all active blogposts that had been created before. The response is sorted by
 |createdAt[lte]|`String`|Get blogposts that are created in or before the date mentioned. Can be included alongside of `createdAt[gte]` param|
 |createdAt|`String`|Get blogposts in a range date by format of "YYYY-MM-DD,YYYY-MM-DD". Only select blogposts created in 24 hours if there's only one date present. API will return an error if `createdAt[gte]` or `createdAt[lte]` is also included|
 |user|`String`|Search blogposts that had been writen by userId|
+|tags|`String`|Search blogposts by its saved tags. If there were two or more tags provided (separated by comma), search result would only display posts with all of the tags included|
 |limit|`Number`|How many blogposts that can be included in a single page. The default number of limit is 100 blogposts per page|
 |page|`Number`|Requested page number deducted from limit param and how many blogposts are found|
 
@@ -472,62 +478,6 @@ Get all active blogposts that had been created before. The response is sorted by
       "commentCount": 0,
       "slug": "users-new-post-4-characters-minimum",
       "id": "657dc0cb998ee1e6ed20938c"  
-    }
-  ]
-}
-```
-## Get All Tags
-```HTTP
-GET /api/v2/blogposts/alltags
-```
-Get all tags that had been used in myMiniBlog before. 
-
-**Response**
-```JSON
-{
-  "status" : "success",
-  "data": {
-    "tags": [
-      "admin-post",
-      "daily-life",
-      "funny",
-      "personal",
-      "testing"
-    ]
-  }
-}
-```
-## Get Blogposts by Tags
-```HTTP
-GET /api/v2/blogposts/tags/:tag
-```
-Get all blogposts by filtering its owned tags. You can input multiple tags by inserting the parameters divided by comma. Query filter works the same way as [Get All Blogposts](#get-all-blogposts) API endpoint. The response returned is also in the same format as Get All Blogposts' response.
-
-**Response**
-```JSON
-{
-  "status": "success",
-  "results": 1,
-  "data": [
-    {
-      "title": "User's New Post, 4 Characters Minimum",
-      "summary": "This is short summary of this post.", 
-      "blogpostImg": "/my-mini-blog/post_img/default.jpg",
-      "blogthumbImg": "/my-mini-blog/thumb_img/default.jpg",
-      "bannerImg": "/my-mini-blog/banner_img/default.jpg",
-      "content": "Insert long sentences here, 26 characters at minimum.",
-      "tags": [
-                "personal",
-      ],
-      "createdAt": "2023-12-16T15:12:41.879Z",
-      "updatedAt": "2023-12-16T15:12:41.879Z",
-      "user": {
-        "_id": "655f6a6feea8c6dc6f4f1227",
-        "name": "Rouge"
-      },
-      "commentCount": 2,
-      "slug": "users-new-post-4-characters-minimum",
-      "id": "657dc0cb998ee1e6ed20938c"          
     }
   ]
 }
@@ -648,7 +598,7 @@ PATCH /api/v2/blogposts/:id
 ```HTTP
 DELETE /api/v2/blogposts/:id
 ```
-🔒 Delete a blogpost and its comments by providing the blogpost's ID.
+🔒 Delete a blogpost by providing the blogpost's ID. Deleting a blogpost will also delete comments related, delete images in Cloudinary platform, and take the blogpost's ID off the Tag documents.
 
 <br>
 
