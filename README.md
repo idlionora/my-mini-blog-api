@@ -439,7 +439,7 @@ Get all active blogposts that had been created before. The response is sorted by
 **Query Parameters**
 | param | type | description |
 |:------|:-----|:------------|
-|fields |`String`|Restrict the fields returned when requesting blogposts. Example to exclude more than one field is divided by coma: "-slug,-thumbnail,-banner,-__v"
+|fields |`String`|Restrict the fields returned when requesting blogposts. Example to exclude more than one field is divided by coma: "-slug,-thumbnail,-banner,-__v"|
 |createdAt[gte]|`String`|Get blogposts that are created in or after the date mentioned. Date input is a string in format of "YYYY-MM-DD"|
 |createdAt[lte]|`String`|Get blogposts that are created in or before the date mentioned. Can be included alongside of `createdAt[gte]` param|
 |createdAt|`String`|Get blogposts in a range date by format of "YYYY-MM-DD,YYYY-MM-DD". Only select blogposts created in 24 hours if there's only one date present. API will return an error if `createdAt[gte]` or `createdAt[lte]` is also included|
@@ -603,8 +603,140 @@ DELETE /api/v2/blogposts/:id
 <br>
 
 ------
-✔💬 Below are descriptions for API endpoints related to **Comments**. Click [here](#api-references) to go back to table of contents.
+✔💬 Below are descriptions for API endpoints related to **Tags**. Click [here](#api-references) to go back to table of contents.
+## Create New Tag 
 
+```HTTP
+POST /api/v2/tags
+```
+🎫 Create a new tag by directly inputing tag's name and/or blogpostIDs. (tag documents are automatically created when tags in blogposts are updated)
+
+**Body**
+```JSON
+{
+    "tag": "new user intro",
+    "blogposts": []
+}
+```
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "tag": "new user intro",
+            "blogposts": [
+                "65c1b06904a3707cf58c1098"
+            ],
+            "_id": "65c8e5d5363ca0365b175529"
+        }
+    }
+}
+```
+
+## Get All Tags
+```HTTP
+GET /api/v2/tags
+```
+Get all tags that had been created before. The response is sorted by tag's name.
+
+**Query Parameters**
+| param | type | description |
+|:------|:-----|:------------|
+|populate|`String`|input "true" to populate blogposts with title, summary, slug, blogthumbImg, and user|
+|blogposts|`ObjectId`|Search tags which include all the blogpostIDs provided|
+|tag|`String`|Search tag by tag's name, can return multiple tags when prompted (input multiple names separated by comma)|
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "results": 1,
+    "data": [
+        {
+            "_id": "65c8e5d5363ca0365b175529",
+            "tag": "new user intro",
+            "blogposts": [
+                {
+                    "_id": "65c1b06904a3707cf58c1098",
+                    "title": "Testing Destroy Image by Cld Id Tag",
+                    "summary": "This is short summary of this post.",
+                    "blogthumbImg": "/v1707192574/my-mini-blog/blogthumb_img/blogthumb-65c1b06904a3707cf58c1098_2024-02-06-125.jpg",
+                    "user": {
+                        "_id": "6561dfed2e9013c758a7e675",
+                        "name": "Fleetways"
+                    },
+                    "slug": "testing-destroy-image-by-cld-id-tag",
+                    "id": "65c1b06904a3707cf58c1098"
+                }
+            ]
+        }
+    ]
+}
+```
+## Get Tag
+```HTTP
+GET /api/v2/tags/:id
+```
+Get a single tag by its ID. Adding populate=true for query param would not expand the blogposts object.
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "_id": "65c8e5d5363ca0365b175529",
+            "tag": "new user intro",
+            "blogposts": [
+                "65c1b06904a3707cf58c1098"
+            ]
+        }
+    }
+}
+```
+
+## Update Tag
+```HTTP
+PATCH /api/v2/tags/:id
+```
+🎫 Update tag's name and array of blogposts manually. This endpoint is admin-only as to not disturb the flow of updating tags from /blogposts endpoints.
+
+**Body**
+```JSON
+{
+    "tag": "fun-house",
+    "blogposts": ["65c1b06904a3707cf58c1098"]
+}
+```
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "data": {
+        "doc": {
+            "_id": "65c8dbe808e1d032e71c11ed",
+            "tag": "fun-house",
+            "blogposts": [
+                "65c1b06904a3707cf58c1098"
+            ]
+        }
+    }
+}
+```
+
+## Delete Tag
+```HTTP
+DELETE /api/v2/tags/:id
+```
+🎫 Delete a tag by providing the tag's ID. Deleting a tag will not update the tags array in blogpost's document.
+
+<br>
+
+------
+✔💬 Below are descriptions for API endpoints related to **Comments**. Click [here](#api-references) to go back to table of contents.
 ## Create New Comment
 ```HTTP
 POST /api/v2/comments/
@@ -820,6 +952,8 @@ Get all posted comments from specified blogpost, sorted from oldest to newest by
     ]
 }
 ```
+
+## Get All Tags by BlogpostId
 
 ## Get Blogposts by UserId
 ```HTTP
