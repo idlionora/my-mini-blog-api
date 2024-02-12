@@ -27,11 +27,11 @@ There is a rate limit of **100 requests per hour**, per IP address. If you excee
 - [Update Blogpost](#update-blogpost) 🔒
 - [Delete Blogpost](#delete-blogpost) 🔒
 ### Tags
-- [Create New Tag] 🎫
-- [Get All Tags]
-- [Get Tag]
-- [Update Tag] 🎫
-- [Delete Tag] 🎫
+- [Create New Tag](#create-new-tag) 🎫
+- [Get All Tags](#get-all-tags)
+- [Get Tag](#get-tag)
+- [Update Tag](#update-tag) 🎫
+- [Delete Tag](#delete-tag) 🎫
 ### Comments
 - [Create New Comment](#create-new-comment) 🔒
 - [Get All Comments](#get-all-comments)
@@ -41,7 +41,7 @@ There is a rate limit of **100 requests per hour**, per IP address. If you excee
 ### Others
 - [Create New Comment by BlogpostId](#create-new-comment-by-blogpostid) 🔒
 - [Get All Comments by BlogpostId](#get-all-comments-by-blogpostid)
-- [Get All Tags by BlogpostId]
+- [Get All Tags by BlogpostId](#get-all-tags-by-blogpostid)
 - [Get Blogposts by UserId](#get-blogposts-by-userid)
 - [Get All Comments by UserId](#get-all-comments-by-userid)
 
@@ -391,7 +391,7 @@ DELETE /api/v2/users/:id
 ```HTTP
 POST /api/v2/blogposts
 ```
-🔒 Create a new blogpost by providing title and content at the minimum. You can also add tags and summary to your post. Image representations can also be provided by uploading blogpostImg and bannerImg as form-data files. (See [Update Blogpost](#update-blogpost) for form-data example)
+🔒 Create a new blogpost by providing title and content at the minimum. You can also add tags and summary to your post. Image representations can also be provided by uploading blogpostImg and bannerImg as form-data files. (See [Update Blogpost](#update-blogpost) for form-data example). Make sure the value for `tags` is submitted in correct data-type as to not mess with the tag updating middleware!
 
 **Body**
 ```JSON
@@ -553,7 +553,7 @@ Call a single blogpost by its ID and get the requested document with all embedde
 PATCH /api/v2/blogposts/:id
 ```
 
-🔒 Edit user's blogpost including adding blogpostImg and bannerImg. blogpostImg will be used to post's representative picture in main page and thumbnail with size of ,  Only user who wrote the post and admins can perform this action.
+🔒 Edit user's blogpost including adding blogpostImg and bannerImg. blogpostImg can be used as post's representative picture in main page, while bannerImg will be used as the leading image in the post's page. Only user who wrote the post and admins can perform this action.
 
 **multipart/ form-data**
 | key | type | value |
@@ -954,6 +954,42 @@ Get all posted comments from specified blogpost, sorted from oldest to newest by
 ```
 
 ## Get All Tags by BlogpostId
+```HTTP
+GET /api/v2/blogposts/:blogpostId/tags
+```
+Get all Tag documents which list the blogpost's ID provided. You can also put populate=true query param in this endpoint. The search result is sorted by the tag's name. 
+
+**Response**
+```JSON
+{
+    "status": "success",
+    "results": 3,
+    "data": [
+        {
+            "_id": "65ca246ddc149658dd4035ae",
+            "tag": "admin-post",
+            "blogposts": [
+                "65ca246ddc149658dd4035ab",
+                "65ca225cdc149658dd40357a"
+            ]
+        },
+        {
+            "_id": "65ca225cdc149658dd403580",
+            "tag": "personal",
+            "blogposts": [
+                "65ca225cdc149658dd40357a"
+            ]
+        },
+        {
+            "_id": "65ca219cdc149658dd40356e",
+            "tag": "tag-edit",
+            "blogposts": [
+                "65ca225cdc149658dd40357a"
+            ]
+        }
+    ]
+}
+```
 
 ## Get Blogposts by UserId
 ```HTTP
