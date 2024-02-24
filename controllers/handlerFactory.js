@@ -90,7 +90,7 @@ exports.updateOneForUserOnly = (Model) =>
       return next(new AppError("No document found with that ID", 404));
     }
 
-    if (req.user.id !== doc.user && req.user.role !== "admin") {
+    if (req.user.id !== doc.user.id && req.user.role !== "admin") {
       return next(
         new AppError("You do not have permission to perform this action", 403),
       );
