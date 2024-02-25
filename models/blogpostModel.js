@@ -21,11 +21,11 @@ const blogpostSchema = new mongoose.Schema(
     slug: { type: String, unique: true },
     blogpostImg: {
       type: String,
-      default: "/my-mini-blog/post_img/default.jpg",
+      default: "/my-mini-blog/blogpost_img/default.jpg",
     },
     blogthumbImg: {
       type: String,
-      default: "/my-mini-blog/thumb_img/default.jpg",
+      default: "/my-mini-blog/blogthumb_img/default.jpg",
     },
     bannerImg: {
       type: String,
