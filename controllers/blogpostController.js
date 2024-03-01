@@ -118,6 +118,18 @@ exports.setTagsQueryToSliceSearch = (req, res, next) => {
   next();
 };
 
+exports.setIdQueryToUnionSearch = (req, res, next) => {
+  if (req.query._id && req.query._id.includes(",")) {
+    const idsArr = req.query._id
+      .replace(/, /g, ",")
+      .split(",")
+      .filter((id) => id.length > 0);
+    req.query._id = { $in: idsArr };
+  }
+
+  next();
+};
+
 exports.getAllBlogposts = factory.getAll(Blogpost);
 
 const blogpostPopOptions = [

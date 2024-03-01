@@ -4,17 +4,6 @@ const tagController = require("../controllers/tagController");
 
 const router = express.Router({ mergeParams: true });
 
-/* TODOS 
- - getRandomRelatedPosts, /related-posts/:postNum, maybe I can just put it in client side
- 
- - middleware to aggregate tags and put it into getBlogpost x I did not think things through
- - delete cloudinary pictures when delete blogpost
-
- - add image to new post
- - middleware updateTagFromNewPost, updateTagFromEdittedPost
- - populate blogposts if search for related posts (summary=true)
-*/
-
 router
   .route("/")
   .get(

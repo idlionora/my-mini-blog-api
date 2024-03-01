@@ -440,6 +440,7 @@ Get all active blogposts that had been created before. The response is sorted by
 | param | type | description |
 |:------|:-----|:------------|
 |fields |`String`|Restrict the fields returned when requesting blogposts. Example to exclude more than one field is divided by coma: "-slug,-thumbnail,-banner,-__v"|
+|_id|`String`|Search blogpost by ID, can return multiple blogposts when prompted (input multiple IDs separated by comma)|
 |createdAt[gte]|`String`|Get blogposts that are created in or after the date mentioned. Date input is a string in format of "YYYY-MM-DD"|
 |createdAt[lte]|`String`|Get blogposts that are created in or before the date mentioned. Can be included alongside of `createdAt[gte]` param|
 |createdAt|`String`|Get blogposts in a range date by format of "YYYY-MM-DD,YYYY-MM-DD". Only select blogposts created in 24 hours if there's only one date present. API will return an error if `createdAt[gte]` or `createdAt[lte]` is also included|
@@ -644,7 +645,7 @@ Get all tags that had been created before. The response is sorted by tag's name.
 **Query Parameters**
 | param | type | description |
 |:------|:-----|:------------|
-|populate|`String`|input "true" to populate blogposts with title, summary, slug, blogthumbImg, and user|
+|populate|`String`|input "true" to populate blogposts with blogpostImg, title, user, createdAt, summary, tags, commentCount, and slug|
 |blogposts|`ObjectId`|Search tags which include all the blogpostIDs provided|
 |tag|`String`|Search tag by tag's name, can return multiple tags when prompted (input multiple names separated by comma)|
 
@@ -662,12 +663,15 @@ Get all tags that had been created before. The response is sorted by tag's name.
                     "_id": "65c1b06904a3707cf58c1098",
                     "title": "Testing Destroy Image by Cld Id Tag",
                     "summary": "This is short summary of this post.",
-                    "blogthumbImg": "/v1707192574/my-mini-blog/blogthumb_img/blogthumb-65c1b06904a3707cf58c1098_2024-02-06-125.jpg",
+                    "slug": "journaling-rubberducking-our-mind",
+                    "blogpostImg": "/my-mini-blog/blogpost_img/default.jpg",
+                    "tags": [ "new user intro" ],
+                    "createdAt": "2024-02-24T12:34:20.276Z",
                     "user": {
                         "_id": "6561dfed2e9013c758a7e675",
                         "name": "Fleetways"
                     },
-                    "slug": "testing-destroy-image-by-cld-id-tag",
+                    "commentCount": 0,
                     "id": "65c1b06904a3707cf58c1098"
                 }
             ]

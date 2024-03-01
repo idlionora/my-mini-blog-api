@@ -14,6 +14,7 @@ router
   .route("/")
   .get(
     blogpostController.setTagsQueryToSliceSearch,
+    blogpostController.setIdQueryToUnionSearch,
     blogpostController.getAllBlogposts,
   )
   .post(

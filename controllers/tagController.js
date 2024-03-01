@@ -142,7 +142,7 @@ exports.getAllTags = catchAsync(async (req, res, next) => {
   if (req.query.populate === "true") {
     tagQuery.populate({
       path: "blogposts",
-      select: "title summary slug blogthumbImg user",
+      select: "blogpostImg title user createdAt summary tags commentCount slug",
     });
   }
   req.query.populate = undefined;
