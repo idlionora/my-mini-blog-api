@@ -130,8 +130,12 @@ exports.setIdQueryToUnionSearch = (req, res, next) => {
   next();
 };
 
-exports.getAllBlogposts = factory.getAll(Blogpost);
-
+const allblogpostsPopOptions = [
+  {
+    path: "user",
+    select: "name photo",
+  },
+];
 const blogpostPopOptions = [
   {
     path: "user",
@@ -139,6 +143,8 @@ const blogpostPopOptions = [
   },
   "comments",
 ];
+
+exports.getAllBlogposts = factory.getAll(Blogpost, allblogpostsPopOptions);
 exports.getBlogpost = factory.getOne(Blogpost, blogpostPopOptions);
 exports.updateBlogpost = factory.updateOneForUserOnly(Blogpost);
 
